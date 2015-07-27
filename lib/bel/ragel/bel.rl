@@ -26,6 +26,7 @@ machine bel;
 require_relative 'language'
 require_relative 'namespace'
 require_relative 'evidence_model'
+require_relative 'nonblocking_io_wrapper'
 
 module BEL
   module Script
@@ -100,7 +101,7 @@ module BEL
       MAX_LENGTH = 1024 * 128 # 128K
 
       def initialize(io, namespaces = {})
-        @io         = io
+        @io         = NonblockingIOWrapper.new(io, MAX_LENGTH)
         @namespaces =
           case namespaces
           when BEL::Namespace::ResourceIndex
@@ -125,37 +126,19 @@ module BEL
         my_ts = nil
         my_te = nil
         
-        begin
-				  io_read     = nonblock_read_function(@io)
-          while chunk = io_read[MAX_LENGTH]
-            data = leftover + chunk.unpack('c*')
-            p = 0
-            pe = data.length
-            %% write exec;
-            if my_ts
-              leftover = data[my_ts..-1]
-              my_te = my_te - my_ts if my_te
-              my_ts = 0
-            else
-              leftover = []
-            end
-          end
-        rescue IO::WaitReadable
-          IO.select([@io])
-          retry
-        rescue EOFError
-          # end of stream; parsing complete
-        end
-      end
-
-      private
-
-      def nonblock_read_function(io_like)
-        if Gem.win_platform?
-          io_like.method(:read)
-        else
-          io_like.method(:read_nonblock)
-        end
+				@io.each do |chunk|
+					data = leftover + chunk.unpack('c*')
+					p = 0
+					pe = data.length
+					%% write exec;
+					if my_ts
+						leftover = data[my_ts..-1]
+						my_te = my_te - my_ts if my_te
+						my_ts = 0
+					else
+						leftover = []
+					end
+				end
       end
     end
   end
