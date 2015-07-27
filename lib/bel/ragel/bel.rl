@@ -47,7 +47,7 @@ module BEL
           end
 
         unless parser
-          fail ArgumentError, "content: expected string or file-like"
+          fail ArgumentError, "content: expected string or io-like"
         end
 
         if block_given?
@@ -99,8 +99,8 @@ module BEL
 
       MAX_LENGTH = 1024 * 128 # 128K
 
-      def initialize(file, namespaces = {})
-        @file       = file
+      def initialize(io, namespaces = {})
+        @io         = io
         @namespaces =
           case namespaces
           when BEL::Namespace::ResourceIndex
@@ -126,7 +126,8 @@ module BEL
         my_te = nil
         
         begin
-          while chunk = @file.read_nonblock(MAX_LENGTH)
+				  io_read     = nonblock_read_function(@io)
+          while chunk = io_read[MAX_LENGTH]
             data = leftover + chunk.unpack('c*')
             p = 0
             pe = data.length
@@ -140,10 +141,20 @@ module BEL
             end
           end
         rescue IO::WaitReadable
-          IO.select([@file])
+          IO.select([@io])
           retry
         rescue EOFError
           # end of stream; parsing complete
+        end
+      end
+
+      private
+
+      def nonblock_read_function(io_like)
+        if Gem.win_platform?
+          io_like.method(:read)
+        else
+          io_like.method(:read_nonblock)
         end
       end
     end
