@@ -44,10 +44,8 @@ module BEL
 
         begin
           ffi_lib lib_path
-          true
         rescue LoadError => err
           raise LibraryLoadError.new('libbel', err)
-          false
         end
       end
     end
