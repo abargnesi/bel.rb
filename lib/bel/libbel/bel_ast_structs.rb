@@ -7,8 +7,8 @@ module BEL
   module LibBEL
     class AstNodeTypeUnion < FFI::Union
       layout(
-        :ttype,     :bel_ast_token_type,
-        :vtype,     :bel_ast_value_type
+        :ttype, BEL::LibBEL::BelAstTokenType,
+        :vtype, BEL::LibBEL::BelAstValueType
       )
 
       def token_type
@@ -22,7 +22,7 @@ module BEL
 
     class BelAstNodeTypeInfo < FFI::Struct
       layout(
-        :type,      :bel_ast_node_type,
+        :type,      BEL::LibBEL::BelAstNodeType,
         :union,     AstNodeTypeUnion
       )
 
@@ -36,10 +36,10 @@ module BEL
     end
 
     class BelAstNode < FFI::Union
-      include NodeTraversal
-      include NodeComposition
-      include NodeTransformation
-      include NodeTest
+      include BEL::LibBEL::NodeTraversal
+      include BEL::LibBEL::NodeComposition
+      include BEL::LibBEL::NodeTransformation
+      include BEL::LibBEL::NodeTest
 
       layout(
         :type_info, BelAstNodeTypeInfo.ptr,
@@ -74,158 +74,151 @@ module BEL
       def to_typed_node
         LibBEL.typed_node(self)
       end
-    end
 
-    def to_s
-      LibBEL.bel_ast_node_as_string(self)
-    end
-  end
-
-  class BelAstNodeToken < FFI::Struct
-    layout(
-      :type,      :bel_ast_node_type,
-      :ttype,     :bel_ast_token_type,
-      :left,      BelAstNode.ptr,
-      :right,     BelAstNode.ptr
-    )
-
-    attr_accessor :bel_ast_node
-
-    def type
-      self[:type]
-    end
-
-    def token_type
-      self[:ttype]
-    end
-
-    def left
-      self[:left]
-    end
-
-    def left=(left)
-      self[:left] = left
-    end
-
-    def right
-      self[:right]
-    end
-
-    def right=(right)
-      self[:right] = right
-    end
-
-    def to_s
-      LibBEL.bel_ast_node_as_string(@bel_ast_node)
-    end
-  end
-
-  class BelAstNodeValue < FFI::Struct
-    layout(
-      :type,      :bel_ast_node_type,
-      :vtype,     :bel_ast_value_type,
-      :value,     :string
-    )
-
-    attr_accessor :bel_ast_node
-
-    def type
-      self[:type]
-    end
-
-    def value_type
-      self[:vtype]
-    end
-
-    def value
-      self[:value]
-    end
-  end
-
-  class BelAst < FFI::ManagedStruct
-    include NodeTraversal
-    include NodeComposition
-    include NodeTransformation
-    include NodeTest
-
-    def to_s
-      LibBEL.bel_ast_node_as_string(@bel_ast_node)
-    end
-  end
-
-  class BelAst < FFI::ManagedStruct
-
-    layout(
-      :root,      BelAstNode.ptr
-    )
-
-    def root
-      self[:root]
-    end
-
-    def root=(root)
-      self[:root] = root
-    end
-
-    # overrides {NodeTraversal#each_depth_first}
-    def each_depth_first(callable = nil, &block)
-      root.each_depth_first(callable, &block)
-    end
-
-    # overrides {NodeTraversal#each_breadth_first}
-    def each_breadth_first(callable = nil, queue = [], &block)
-      root.each_breadth_first(callable, queue, &block)
-    end
-
-    def transform(transforms)
-      self.send(:transform_tree, transforms, :depth_first)
-    end
-
-    def transform!(transforms)
-      self.send(:transform_tree!, transforms, :depth_first)
-    end
-
-    def transform_tree(transforms, traversal = :depth_first)
-      copy_ast = LibBEL.copy_ast(self)
-      copy_ast.root.transform_tree(transforms, traversal)
-      copy_ast
-    end
-
-    def transform_tree!(transforms, traversal = :depth_first)
-      self.root.transform_tree!(transforms, traversal)
-      self
-    end
-
-    def any?(predicates)
-      self.root.any_in_tree?(predicates)
-    end
-
-    def all?(predicates)
-      self.root.all_in_tree?(predicates)
-    end
-
-    def self.release(ptr)
-      if !ptr.null?
-        LibBEL.bel_free_ast(ptr)
+      def to_s
+        LibBEL.bel_ast_node_as_string(self)
       end
     end
 
-    def to_s
-      LibBEL.bel_ast_as_string(self)
+    class BelAstNodeToken < FFI::Struct
+      layout(
+        :type,      BEL::LibBEL::BelAstNodeType,
+        :ttype,     BEL::LibBEL::BelAstTokenType,
+        :left,      BEL::LibBEL::BelAstNode.ptr,
+        :right,     BEL::LibBEL::BelAstNode.ptr
+      )
+
+      attr_accessor :bel_ast_node
+
+      def type
+        self[:type]
+      end
+
+      def token_type
+        self[:ttype]
+      end
+
+      def left
+        self[:left]
+      end
+
+      def left=(left)
+        self[:left] = left
+      end
+
+      def right
+        self[:right]
+      end
+
+      def right=(right)
+        self[:right] = right
+      end
+
+      def to_s
+        LibBEL.bel_ast_node_as_string(@bel_ast_node)
+      end
     end
-  end
 
-  private
+    class BelAstNodeValue < FFI::Struct
+      layout(
+        :type,      BEL::LibBEL::BelAstNodeType,
+        :vtype,     BEL::LibBEL::BelAstValueType,
+        :value,     :string
+      )
 
-  def self.typed_node(bel_ast_node)
-    if bel_ast_node.type_info.type == :BEL_TOKEN
-      token = BelAstNodeToken.new(bel_ast_node.token)
-      token.bel_ast_node = bel_ast_node
-      token
-    else
-      value = BelAstNodeValue.new(bel_ast_node.value)
-      value.bel_ast_node = bel_ast_node
-      value
+      attr_accessor :bel_ast_node
+
+      def type
+        self[:type]
+      end
+
+      def value_type
+        self[:vtype]
+      end
+
+      def value
+        self[:value]
+      end
+    end
+
+    class BelAst < FFI::ManagedStruct
+      include BEL::LibBEL::NodeTraversal
+      include BEL::LibBEL::NodeComposition
+      include BEL::LibBEL::NodeTransformation
+      include BEL::LibBEL::NodeTest
+
+      layout(
+        :root, BEL::LibBEL::BelAstNode.ptr
+      )
+
+      def root
+        self[:root]
+      end
+
+      def root=(root)
+        self[:root] = root
+      end
+
+      # overrides {NodeTraversal#each_depth_first}
+      def each_depth_first(callable = nil, &block)
+        root.each_depth_first(callable, &block)
+      end
+
+      # overrides {NodeTraversal#each_breadth_first}
+      def each_breadth_first(callable = nil, queue = [], &block)
+        root.each_breadth_first(callable, queue, &block)
+      end
+
+      def transform(transforms)
+        self.send(:transform_tree, transforms, :depth_first)
+      end
+
+      def transform!(transforms)
+        self.send(:transform_tree!, transforms, :depth_first)
+      end
+
+      def transform_tree(transforms, traversal = :depth_first)
+        copy_ast = LibBEL.copy_ast(self)
+        copy_ast.root.transform_tree(transforms, traversal)
+        copy_ast
+      end
+
+      def transform_tree!(transforms, traversal = :depth_first)
+        self.root.transform_tree!(transforms, traversal)
+        self
+      end
+
+      def any?(predicates)
+        self.root.any_in_tree?(predicates)
+      end
+
+      def all?(predicates)
+        self.root.all_in_tree?(predicates)
+      end
+
+      def self.release(ptr)
+        if !ptr.null?
+          LibBEL.bel_free_ast(ptr)
+        end
+      end
+
+      def to_s
+        LibBEL.bel_ast_as_string(self)
+      end
+    end
+
+    private
+
+    def self.typed_node(bel_ast_node)
+      if bel_ast_node.type_info.type == :BEL_TOKEN
+        token = BelAstNodeToken.new(bel_ast_node.token)
+        token.bel_ast_node = bel_ast_node
+        token
+      else
+        value = BelAstNodeValue.new(bel_ast_node.value)
+        value.bel_ast_node = bel_ast_node
+        value
+      end
     end
   end
 end

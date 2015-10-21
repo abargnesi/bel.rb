@@ -3,7 +3,7 @@ module BEL
 
     class BelToken < FFI::Struct
 
-      layout :type,      :bel_token_type,
+      layout :type,      BEL::LibBEL::BelTokenType,
              :pos_start, :int,
              :pos_end,   :int,
              :value,     :pointer
