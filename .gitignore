@@ -17,3 +17,7 @@ Makefile
 # ignore top-level .gems directory if used
 /.gems
 
+*.so
+*.bundle
+tags
+*.tags

@@ -134,6 +134,10 @@ module BEL
       BEL::LibBEL::BelAst.new(BEL::LibBEL::bel_parse_term(bel_string))
     end
 
+    def self.parse(bel_string)
+      BEL::LibBEL::BelAst.new(BEL::LibBEL::bel_parse_term(bel_string))
+    end
+
     def self.tokenize_term(bel_string)
       BEL::LibBEL::BelTokenList.new(self.bel_tokenize_term(bel_string))
     end
