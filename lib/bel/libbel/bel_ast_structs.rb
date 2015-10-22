@@ -139,6 +139,20 @@ module BEL
       def value
         self[:value]
       end
+
+      def to_s
+        "#{value_type}(#{null_as_string(value)})"
+      end
+
+      private
+
+      def null_as_string(value)
+        if value == nil
+          '(null)'
+        else
+          value
+        end
+      end
     end
 
     class BelAst < FFI::ManagedStruct

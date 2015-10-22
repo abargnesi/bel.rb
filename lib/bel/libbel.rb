@@ -94,6 +94,7 @@ module BEL
 
     # bel ast
     attach_function :bel_ast_as_string,       [:pointer                                               ], :string
+    attach_function :bel_ast_node_as_string,  [:pointer                                               ], :string
     attach_function :bel_copy_ast_node,       [:pointer                                               ], :pointer
     attach_function :bel_free_ast,            [:pointer                                               ], :void
     attach_function :bel_free_ast_node,       [:pointer                                               ], :void
