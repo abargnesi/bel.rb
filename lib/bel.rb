@@ -17,13 +17,13 @@ require_relative 'bel/completion'
 include BEL::Language
 include BEL::Namespace
 
-BEL::Extension.load_extension('jgf', 'json/json', 'bel', 'xbel')
+BEL::Extension.load_extension(
+  'format/bel',       # BEL Script support
+  'format/xbel',      # XBEL (XML) support
+  'format/rdf/rdf',   # BEL RDF support
+  'format/json/json', # JSON Evidence support
+  'format/jgf',       # BEL JSON Graph Format support
+)
 
-begin
-  BEL::Extension.load_extension('rdf/rdf')
-rescue LoadError => e
-  # No RDF support.
-  # TODO Report extension load failure.
-end
 # vim: ts=2 sw=2:
 # encoding: utf-8

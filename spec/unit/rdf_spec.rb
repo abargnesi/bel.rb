@@ -3,8 +3,6 @@ $: << File.join(File.expand_path(File.dirname(__FILE__)), '..', '..', 'lib')
 require 'bel'
 require 'uuid'
 
-BEL::Extension.load_extension %s(rdf/rdf)
-
 include BEL::Language
 include BEL::Namespace
 include BEL::Model
@@ -13,7 +11,7 @@ describe 'RDF functionality of BEL language objects' do
 
   before(:all) do
     begin
-      BEL::Extension.load_extension('rdf/rdf')
+      BEL::Extension.load_extension('format/rdf/rdf')
     rescue LoadError => e
       raise
     end

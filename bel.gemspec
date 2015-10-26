@@ -57,12 +57,10 @@ Gem::Specification.new do |spec|
 
   # runtime
   spec.add_dependency             'ffi',           '1.9.10'
-
-  # test rdf functionality
-  spec.add_development_dependency 'addressable',   '~> 2.3'
-  spec.add_development_dependency 'rdf',           '~> 1.1'
-  spec.add_development_dependency 'rdf-turtle',    '~> 1.1'
-  spec.add_development_dependency 'uuid',          '~> 2.3'
+  spec.add_dependency             'addressable',   '~> 2.3'
+  spec.add_dependency             'rdf',           '~> 1.1'
+  spec.add_dependency             'rdf-turtle',    '~> 1.1'
+  spec.add_dependency             'uuid',          '~> 2.3'
 
   # development gems
   spec.add_development_dependency 'minitest',      '~> 5.7'
