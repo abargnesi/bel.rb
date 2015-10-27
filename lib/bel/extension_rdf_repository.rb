@@ -2,19 +2,19 @@ module BEL
   module Extension
 
     # TODO Document
-    module ResourceRepository
+    module RdfRepository
 
       MUTEX = Mutex.new
       private_constant :MUTEX
 
       # TODO Document
-      def self.register_resource_repository(repo)
+      def self.register_rdf_repository(repo)
         MUTEX.synchronize {
           @@repos ||= []
           # vivified hash, like: { :foo => { :bar => [] } }
           @@index ||= autovivified_hash(autovivified_hash([]))
           
-          if _resource_repositories(repo.id)
+          if _rdf_repositories(repo.id)
             raise ExtensionRegistrationError.new(repo.id)
           end
 
@@ -29,14 +29,14 @@ module BEL
       end
 
       # TODO Document
-      def self.resource_repositories(*values)
+      def self.rdf_repositories(*values)
         MUTEX.synchronize {
-          _resource_repositories(*values)
+          _rdf_repositories(*values)
         }
       end
 
       # TODO Document
-      def self._resource_repositories(*values)
+      def self._rdf_repositories(*values)
         if values.empty?
           Array.new @@repos
         else
@@ -53,7 +53,7 @@ module BEL
           matches.size == 1 ? matches.first : matches
         end
       end
-      private_class_method :_resource_repositories
+      private_class_method :_rdf_repositories
 
       def self.symbolize(key)
         key.to_s.to_sym
@@ -82,19 +82,6 @@ module BEL
 
         def create_repository(options = {})
           raise NotImplementedError.new("#{__method__} is not implemented.")
-        end
-      end
-
-      # FormatError represents an error when the specified format is not
-      # supported by the {Format} extension framework.
-      #
-      # TODO Do we need to reframe this for Resource Repository extensions.
-      class FormatError < StandardError
-
-        FORMAT_ERROR = %Q{Format "%s" is not supported.}
-
-        def initialize(format)
-          super(FORMAT_ERROR % format)
         end
       end
     end

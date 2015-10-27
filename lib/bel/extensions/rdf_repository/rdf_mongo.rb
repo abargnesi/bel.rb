@@ -7,11 +7,11 @@ rescue LoadError => e
   raise
 end
 
-module BEL::Extension::ResourceRepository
+module BEL::Extension::RdfRepository
 
   class RdfMongo
 
-    include BEL::Extension::ResourceRepository::Factory
+    include BEL::Extension::RdfRepository::Factory
 
     ID = :rdf_mongo
 
@@ -27,5 +27,5 @@ module BEL::Extension::ResourceRepository
     end
   end
 
-  register_resource_repository(RdfMongo.new)
+  register_rdf_repository(RdfMongo.new)
 end
