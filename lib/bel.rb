@@ -9,6 +9,8 @@ require_relative 'bel/extension_rdf_repository'
 require_relative 'bel/evidence_model'
 require_relative 'bel/format'
 
+require_relative 'bel/resource/namespaces'
+
 require_relative 'bel/script'
 
 require_relative 'bel/libbel.rb'
