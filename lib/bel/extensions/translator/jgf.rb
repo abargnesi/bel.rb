@@ -215,5 +215,5 @@ module BEL::Extension::Translator
     end
   end
 
-  register_translator(JGFTranslator.new)
+  register(JGFTranslator.new)
 end

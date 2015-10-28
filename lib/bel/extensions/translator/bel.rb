@@ -254,5 +254,5 @@ module BEL::Extension::Translator
     end
   end
 
-  register_translator(BELTranslator.new)
+  register(BELTranslator.new)
 end

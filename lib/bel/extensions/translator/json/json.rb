@@ -136,5 +136,5 @@ module BEL::Extension::Translator
     end
   end
 
-  register_translator(JsonEvidenceTranslator.new)
+  register(JsonEvidenceTranslator.new)
 end

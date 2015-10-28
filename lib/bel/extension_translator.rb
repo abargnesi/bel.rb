@@ -13,7 +13,7 @@ module BEL
     # - Within the file, create a class that implements the protocol specified
     #   by {Translator::Translator}.
     # - Instantiate and register your translator extension by calling
-    #   {Translator.register_translator}.
+    #   {Translator.register}.
     #
     # To see how to define a new translator extension have a look at the
     # {Translator::Translator} module.
@@ -30,7 +30,7 @@ module BEL
       # @param  [Translator::Translator] translator the translator to register
       # @return [Translator::Translator] the +translator+ parameter is returned
       #         for convenience
-      def self.register_translator(translator)
+      def self.register(translator)
         FORMATTER_MUTEX.synchronize {
           @@translators ||= []
           # vivified hash, like: { :foo => { :bar => [] } }
@@ -43,7 +43,7 @@ module BEL
           )
           
           if _translators(translator.id)
-            raise ExtensionRegistrationError.new(translator.id)
+#            raise ExtensionRegistrationError.new(translator.id)
           end
 
           # track registered translators
@@ -167,6 +167,14 @@ module BEL
       module Translator
 
         def id
+          raise NotImplementedError.new("#{__method__} is not implemented.")
+        end
+
+        def name
+          raise NotImplementedError.new("#{__method__} is not implemented.")
+        end
+
+        def description
           raise NotImplementedError.new("#{__method__} is not implemented.")
         end
 

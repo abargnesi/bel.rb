@@ -921,5 +921,5 @@ module BEL::Extension::Translator
     end
   end
 
-  register_translator(XBELTranslator.new)
+  register(XBELTranslator.new)
 end

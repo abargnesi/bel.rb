@@ -580,5 +580,5 @@ module BEL::Extension::Translator
     end
   end
 
-  register_translator(RDFTranslator.new)
+  register(RDFTranslator.new)
 end

@@ -20,13 +20,7 @@ require_relative 'bel/completion'
 include BEL::Language
 include BEL::Namespace
 
-BEL::Extension.load_extension(
-  'translator/bel',       # BEL Script support
-  'translator/xbel',      # XBEL (XML) support
-  'translator/rdf/rdf',   # BEL RDF support
-  'translator/json/json', # JSON Evidence support
-  'translator/jgf',       # BEL JSON Graph Format support
-)
+puts BEL::Extension.init.each(:translator).to_a
 
 # vim: ts=2 sw=2:
 # encoding: utf-8
