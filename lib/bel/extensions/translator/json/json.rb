@@ -2,11 +2,12 @@ require 'bel/evidence_model'
 require 'bel/namespace'
 require 'bel/script'
 
-module BEL::Extension::Format
+module BEL::Extension::Translator
 
-  class FormatJSON
+  class JsonEvidenceTranslator
 
-    include Formatter
+    include Translator
+
     ID            = :json
     MEDIA_TYPES   = %i(application/json)
     EXTENSIONS    = %i(json)
@@ -88,7 +89,7 @@ module BEL::Extension::Format
       }
 
       if load_success
-        BEL::Extension::Format::JSONImplementation
+        BEL::Extension::Translator::JSONImplementation
       else
         mod_s = impl_modules.join(', ')
         msg   = "Could not load any JSON implementation (tried: #{mod_s})."
@@ -135,5 +136,5 @@ module BEL::Extension::Format
     end
   end
 
-  register_formatter(FormatJSON.new)
+  register_translator(JsonEvidenceTranslator.new)
 end

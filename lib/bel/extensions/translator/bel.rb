@@ -1,10 +1,10 @@
 require 'bel'
 
-module BEL::Extension::Format
+module BEL::Extension::Translator
 
-  class FormatBEL
+  class BELTranslator
 
-    include Formatter
+    include Translator
 
     ID          = :bel
     MEDIA_TYPES = %i(application/bel)
@@ -254,5 +254,5 @@ module BEL::Extension::Format
     end
   end
 
-  register_formatter(FormatBEL.new)
+  register_translator(BELTranslator.new)
 end

@@ -3,11 +3,12 @@ require 'bel/language'
 require 'rexml/document'
 require 'rexml/streamlistener'
 
-module BEL::Extension::Format
+module BEL::Extension::Translator
 
-  class FormatXBEL
+  class XBELTranslator
 
-    include Formatter
+    include Translator
+
     ID          = :xbel
     MEDIA_TYPES = %i(application/xml)
     EXTENSIONS  = %i(xml xbel)
@@ -920,5 +921,5 @@ module BEL::Extension::Format
     end
   end
 
-  register_formatter(FormatXBEL.new)
+  register_translator(XBELTranslator.new)
 end

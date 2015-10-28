@@ -1,8 +1,6 @@
-require 'jrjackson'
-# XXX Fake impl
-require 'json'
+require 'multi_json'
 
-module BEL::Extension::Format
+module BEL::Extension::Translator
   module JSONImplementation
 
     class JSONReader
@@ -12,7 +10,7 @@ module BEL::Extension::Format
 
       def each(&block)
         if block_given?
-          JSON.load(@data).each do |obj|
+          MultiJson.load(@data, :symbolize_keys => true).each do |obj|
             yield obj
           end
         else
@@ -24,7 +22,7 @@ module BEL::Extension::Format
     class JSONWriter
 
       def write_json_object(json_object)
-        JSON.dump(json_object)
+        MultiJson.dump(json_object)
       end
     end
   end

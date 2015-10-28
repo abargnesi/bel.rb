@@ -4,7 +4,7 @@ require_relative 'bel/namespace'
 require_relative 'bel/util'
 
 require_relative 'bel/extension'
-require_relative 'bel/extension_format'
+require_relative 'bel/extension_translator'
 require_relative 'bel/extension_rdf_repository'
 require_relative 'bel/evidence_model'
 require_relative 'bel/format'
@@ -21,11 +21,11 @@ include BEL::Language
 include BEL::Namespace
 
 BEL::Extension.load_extension(
-  'format/bel',       # BEL Script support
-  'format/xbel',      # XBEL (XML) support
-  'format/rdf/rdf',   # BEL RDF support
-  'format/json/json', # JSON Evidence support
-  'format/jgf',       # BEL JSON Graph Format support
+  'translator/bel',       # BEL Script support
+  'translator/xbel',      # XBEL (XML) support
+  'translator/rdf/rdf',   # BEL RDF support
+  'translator/json/json', # JSON Evidence support
+  'translator/jgf',       # BEL JSON Graph Format support
 )
 
 # vim: ts=2 sw=2:

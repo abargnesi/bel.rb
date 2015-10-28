@@ -1,13 +1,13 @@
 module BEL
   module Format
-    Format      = BEL::Extension::Format
-    FormatError = BEL::Extension::Format::FormatError
+    Translator      = BEL::Extension::Translator
+    TranslatorError = BEL::Extension::Translator::TranslatorError
 
     def self.evidence(input, input_format)
       prepared_input = process_input(input)
 
-      in_formatter  = BEL::Extension::Format.formatters(input_format) or
-        raise FormatError.new(input_format)
+      in_formatter  = Translator.formatters(input_format) or
+        raise TranslatorError.new(input_format)
 
       EvidenceIterable.new(prepared_input, in_formatter)
     end
@@ -15,11 +15,11 @@ module BEL
     def self.translate(input, input_format, output_format, writer = nil)
       prepared_input = process_input(input)
 
-      in_formatter  = BEL::Extension::Format.formatters(input_format) or
-        raise FormatError.new(input_format)
+      in_formatter  = Translator.translators(input_format) or
+        raise TranslatorError.new(input_format)
 
-      out_formatter = BEL::Extension::Format.formatters(output_format) or
-        raise FormatError.new(output_format)
+      out_formatter = Translator.translators(output_format) or
+        raise TranslatorError.new(output_format)
 
       objects = in_formatter.deserialize(prepared_input)
       output = out_formatter.serialize(objects, writer)

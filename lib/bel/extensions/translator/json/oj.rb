@@ -1,6 +1,6 @@
 require 'oj'
 
-module BEL::Extension::Format
+module BEL::Extension::Translator
   module JSONImplementation
 
     class JSONReader

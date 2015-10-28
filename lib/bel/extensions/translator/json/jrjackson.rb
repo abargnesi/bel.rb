@@ -1,6 +1,8 @@
+require 'jrjackson'
+# XXX Fake impl
 require 'json'
 
-module BEL::Extension::Format
+module BEL::Extension::Translator
   module JSONImplementation
 
     class JSONReader
@@ -10,7 +12,7 @@ module BEL::Extension::Format
 
       def each(&block)
         if block_given?
-          JSON.load(@data, nil, :symbolize_names => true).each do |obj|
+          JSON.load(@data).each do |obj|
             yield obj
           end
         else

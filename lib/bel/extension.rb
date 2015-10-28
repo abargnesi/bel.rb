@@ -3,7 +3,7 @@ module BEL
   # The {Extension} module defines specific areas of customization within the
   # *bel* gem:
   #
-  # - Document formats: see {BEL::Extension::Format}
+  # - Document translation: see {BEL::Extension::Translation}
   module Extension
 
     # Loads BEL extensions from the +$LOAD_PATH+ under the path

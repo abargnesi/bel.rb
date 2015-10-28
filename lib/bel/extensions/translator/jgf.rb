@@ -1,10 +1,10 @@
 require 'bel'
 
-module BEL::Extension::Format
+module BEL::Extension::Translator
 
-  class FormatJGF
+  class JGFTranslator
 
-    include Formatter
+    include Translator
 
     ID            = :jgf
     MEDIA_TYPES   = %i(application/vnd.jgf+json)
@@ -206,7 +206,7 @@ module BEL::Extension::Format
       }
 
       if load_success
-        BEL::Extension::Format::JSONImplementation
+        BEL::Extension::Translator::JSONImplementation
       else
         mod_s = impl_modules.join(', ')
         msg   = "Could not load any JSON implementation (tried: #{mod_s})."
@@ -215,5 +215,5 @@ module BEL::Extension::Format
     end
   end
 
-  register_formatter(FormatJGF.new)
+  register_translator(JGFTranslator.new)
 end

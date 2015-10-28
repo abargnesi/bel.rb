@@ -315,11 +315,11 @@ class BEL::Model::Statement
   end
 end
 
-module BEL::Extension::Format
+module BEL::Extension::Translator
 
-  class FormatRDF
+  class RDFTranslator
 
-    include Formatter
+    include Translator
     ID          = :rdf
     MEDIA_TYPES = %i(
       application/n-quads
@@ -580,5 +580,5 @@ module BEL::Extension::Format
     end
   end
 
-  register_formatter(FormatRDF.new)
+  register_translator(RDFTranslator.new)
 end

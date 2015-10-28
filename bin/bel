@@ -260,22 +260,22 @@ Subcommands:
 
         from_format, to_format = ARGV
 
-        from = BEL::Extension::Format.formatters(from_format)
+        from = BEL::Extension::Translator.translators(from_format)
         unless from
           $stderr.puts(
             from_format ?
-              %Q{The format "#{from_format}" is not available.} :
+              %Q{A translator for "#{from_format}" is not available.} :
               "The from_format argument was not specified."
           )
           $stderr.puts
           Trollop::educate
         end
 
-        to   = BEL::Extension::Format.formatters(to_format)
+        to   = BEL::Extension::Translator.translators(to_format)
         unless to
           $stderr.puts(
             to_format ?
-              %Q{The format "#{to_format}" is not available."} :
+              %Q{A translator for "#{to_format}" is not available."} :
               "The to_format argument was not specified."
           )
           $stderr.puts
