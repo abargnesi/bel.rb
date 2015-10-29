@@ -20,7 +20,7 @@ require_relative 'bel/completion'
 include BEL::Language
 include BEL::Namespace
 
-puts BEL::Extension.init.each(:translator).to_a
+#puts BEL::Extension.system.each(:translator).to_a
 
 # vim: ts=2 sw=2:
 # encoding: utf-8

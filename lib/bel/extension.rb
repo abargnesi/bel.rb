@@ -9,12 +9,12 @@ module BEL
   # - Document translation: see {BEL::Extension::Translation}
   module Extension
 
-    def self.init
+    def self.system
       @instance ||= Instance.new
     end
 
     def self.register(extension)
-      self.init.register(extension)
+      self.system.register(extension)
     end
 
     class Instance
