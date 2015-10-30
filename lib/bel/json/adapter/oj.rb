@@ -20,7 +20,7 @@ module BEL::JSON
     end
 
     def write(data, output_io, options = {})
-      JSON.dump(data, output_io)
+      Oj.to_stream(output_io, data)
     end
   end
 
