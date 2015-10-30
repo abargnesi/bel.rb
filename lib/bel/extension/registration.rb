@@ -10,26 +10,24 @@ module BEL::Extension
     # @return [Translator::Translator] the +translator+ parameter is returned
     #         for convenience
     def register(extension)
-      mutex.synchronize {
-        @extensions ||= []
-        @index      ||= _autovivified_hash(_autovivified_hash([]))
+      @extensions ||= []
+      @index      ||= _autovivified_hash(_autovivified_hash([]))
 
-        if !extension.respond_to?(:id)
-          raise %Q{#{extension.class} must respond to the "id" method with an ID.}
-        end
+      if !extension.respond_to?(:id)
+        raise %Q{#{extension.class} must respond to the "id" method with an ID.}
+      end
 
-        if self.any?{ |other| extension.id == other.id }
-          raise ExtensionRegistrationError.new(extension.id)
-        end
+      if self.any?{ |other| extension.id == other.id }
+        raise ExtensionRegistrationError.new(extension.id)
+      end
 
-        # track registered extensions
-        @extensions << extension
+      # track registered extensions
+      @extensions << extension
 
-        # index extension by its id
-        @index[:id][_symbolize(extension.id)] << extension
+      # index extension by its id
+      @index[:id][_symbolize(extension.id)] << extension
 
-        extension
-      }
+      extension
     end
 
     def _autovivified_hash(value = :self)

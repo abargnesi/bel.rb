@@ -7,6 +7,9 @@ module BEL::Extension
 
     class BELTranslator
 
+      include ::BEL::Extension::Descriptor
+      include ::BEL::Extension::Translator
+
       ID          = :bel
       NAME        = 'BEL Script Translator'
       DESCRIPTION = 'A translator that can read and write evidence to BEL Script (version 1.0).'
@@ -33,7 +36,7 @@ module BEL::Extension
         EXTENSIONS
       end
 
-      def read(data, &block)
+      def read(data, options = {})
         EvidenceYielder.new(data)
       end
 

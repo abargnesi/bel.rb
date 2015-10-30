@@ -28,19 +28,12 @@ module BEL
       }
       private_constant :TYPES
 
-      MUTEX = Mutex.new
-      private_constant :MUTEX
-
       def extension_types
         TYPES.keys
       end
 
       def extension_path_glob(type)
         TYPES[type.to_sym]
-      end
-
-      def mutex
-        MUTEX
       end
 
       private
