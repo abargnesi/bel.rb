@@ -1,7 +1,7 @@
 require 'bel'
 require 'rexml/document'
 
-module BEL::Extension::Translator
+module BEL::Extension
 
   module XBEL
 
@@ -103,9 +103,9 @@ module BEL::Extension::Translator
         el_object = REXML::Element.new('bel:object')
 
         case object
-        when BEL::Model::Term
+        when ::BEL::Model::Term
           el_object.add_element(self.term(object))
-        when BEL::Model::Statement
+        when ::BEL::Model::Statement
           el_statement = REXML::Element.new('bel:statement')
           el_object.add_element(el_statement)
           self.statement(object, el_statement)
@@ -125,9 +125,9 @@ module BEL::Extension::Translator
 
         term.arguments.each do |arg|
           case arg
-          when BEL::Model::Term
+          when ::BEL::Model::Term
             el_term.add_element(self.term(arg))
-          when BEL::Model::Parameter
+          when ::BEL::Model::Parameter
             el_term.add_element(self.parameter(arg))
           end
         end

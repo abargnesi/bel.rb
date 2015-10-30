@@ -1,6 +1,6 @@
 require 'bel'
 
-module BEL::Extension::Translator
+module BEL::Extension
 
   module BEL
 

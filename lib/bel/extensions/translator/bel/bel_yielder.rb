@@ -1,6 +1,6 @@
 require 'bel'
 
-module BEL::Extension::Translator
+module BEL::Extension
 
   module BEL
 
@@ -61,12 +61,14 @@ module BEL::Extension::Translator
       def annotations(annotations)
         return "" unless annotations
 
-        annotations.reduce("") { |bel, (prefix, annotation)|
-          bel << "DEFINE ANNOTATION #{prefix} AS "
-          type   = annotation[:type]   || annotation["type"]
-          domain = annotation[:domain] || annotation["domain"]
+        annotations.reduce("") { |bel, annotation|
+          keyword = annotation[:keyword]
+          type    = annotation[:type]
+          domain  = annotation[:domain]
+          bel << "DEFINE ANNOTATION #{keyword} AS "
+
           case type.to_sym
-          when :url
+          when :uri
             bel << %Q{URL "#{domain}"\n}
           when :pattern
             bel << %Q{PATTERN "#{domain}"\n}
@@ -80,8 +82,10 @@ module BEL::Extension::Translator
       def namespaces(namespaces)
         return "" unless namespaces
 
-        namespaces.reduce("") { |bel, (prefix, url)|
-          bel << %Q{DEFINE NAMESPACE #{prefix} AS URL "#{url}"\n}
+        namespaces.reduce("") { |bel, namespace|
+          keyword = namespace[:keyword]
+          uri     = namespace[:uri]
+          bel << %Q{DEFINE NAMESPACE #{keyword} AS URL "#{uri}"\n}
           bel
         }
       end

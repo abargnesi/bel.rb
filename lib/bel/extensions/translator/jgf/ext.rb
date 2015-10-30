@@ -1,7 +1,7 @@
 require 'bel'
 require 'bel/json'
 
-module BEL::Extension::Translator
+module BEL::Extension
 
   module JGF
 

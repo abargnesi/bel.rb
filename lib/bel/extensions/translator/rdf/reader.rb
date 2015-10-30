@@ -1,11 +1,9 @@
-module BEL::Extension::Translator
+module BEL::Extension
 
   module RDF::Reader
 
     module EvidenceYielder
 
-      RDF  = BEL::RDF::RDF
-      RDFS = RDF::RDFS
       BELV = BEL::RDF::BELV
 
       include ::BEL::Model
@@ -13,11 +11,11 @@ module BEL::Extension::Translator
 
       # Find described resources by +type+ in +graph+.
       #
-      # @param  [RDF::Resource] type the RDF type to find instances for
-      # @param  [RDF::Graph]    graph the RDF graph to query
+      # @param  [::RDF::Resource] type the RDF type to find instances for
+      # @param  [::RDF::Graph]    graph the RDF graph to query
       # @return [Enumerator]    an enumerator of described resource instances
       def resources_of_type(type, graph)
-        graph.query([nil, RDF.type, type])
+        graph.query([nil, ::RDF.type, type])
           .lazy
           .map { |rdf_statement|
             describe(rdf_statement.subject, graph)
@@ -28,8 +26,8 @@ module BEL::Extension::Translator
       # resource will retrieve the neighborhood of RDF statements with
       # +resource+ in the subject position.
       #
-      # @param  [RDF::Resource] resource the RDF resource to describe
-      # @param  [RDF::Graph]    graph the RDF graph to query
+      # @param  [::RDF::Resource] resource the RDF resource to describe
+      # @param  [::RDF::Graph]    graph the RDF graph to query
       # @return [Hash]          a hash of predicate to object in the
       #         neighborhood of +resource+
       def describe(resource, graph)
@@ -40,10 +38,10 @@ module BEL::Extension::Translator
       end
 
       # Iterate the {BELV.Evidence} predicated statements, from the
-      # {RUBYRDF::Graph graph}, and yield those correspdonding {Evidence}
+      # {::RDF::Graph graph}, and yield those correspdonding {Evidence}
       # objects.
       #
-      # @param  [RDF::Graph]     graph the RDF graph to query
+      # @param  [::RDF::Graph]     graph the RDF graph to query
       # @yield  [evidence_model] yields an {Evidence} object
       def evidence_yielder(graph)
         resources_of_type(BELV.Evidence, graph).each do |evidence|
@@ -53,17 +51,17 @@ module BEL::Extension::Translator
       end
 
       # Create an {Evidence} object from RDF statements found in
-      # the {RUBYRDF::Graph graph}.
+      # the {::RDF::Graph graph}.
       #
       # @param  [Hash]       evidence a hash of predicate to object
       #         representing the described evidence
-      # @param  [RDF::Graph] graph the RDF graph to query
+      # @param  [::RDF::Graph] graph the RDF graph to query
       # @return [Evidence]   the evidence model    
       def make_evidence(evidence, graph)
         statement     = describe(evidence[BELV.hasStatement], graph)
 
         # values
-        bel_statement = statement[RDFS.label].value
+        bel_statement = statement[::RDF::RDFS.label].value
         ev_text       = evidence[BELV.hasEvidenceText]
         citation      = evidence[BELV.hasCitation]
 
@@ -137,7 +135,7 @@ module BEL::Extension::Translator
             reader.each_statement do |statement|
               case
               when statement.object == BELV.Evidence &&
-                   statement.predicate == RDF.type
+                   statement.predicate == RUBYRDF.type
                 evidence_resource = statement.subject
               when evidence_resource &&
                    statement.predicate != BELV.hasEvidence &&

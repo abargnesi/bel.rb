@@ -1,7 +1,7 @@
 # vim: ts=2 sw=2:
 # Defines the RDF vocabulary for BEL structures.
 
-module BEL::Extension::Translator
+module BEL::Extension
 
 # rename rdf module to avoid conflict within BEL::RDF
 RUBYRDF = RDF

@@ -216,6 +216,7 @@ Subcommands:
 
       def initialize(global_options)
         @global_options = global_options
+        @extensions     = BEL::Extension.system
       end
 
       def which_io(input_file)
@@ -260,7 +261,7 @@ Subcommands:
 
         from_format, to_format = ARGV
 
-        from = BEL::Extension::Translator.translators(from_format)
+        from = @extensions.find { |ext| ext.id == from_format.to_sym }
         unless from
           $stderr.puts(
             from_format ?
@@ -271,7 +272,7 @@ Subcommands:
           Trollop::educate
         end
 
-        to   = BEL::Extension::Translator.translators(to_format)
+        to = @extensions.find { |ext| ext.id == to_format.to_sym }
         unless to
           $stderr.puts(
             to_format ?

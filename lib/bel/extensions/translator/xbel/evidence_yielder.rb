@@ -1,7 +1,7 @@
 require 'rexml/document'
 require_relative 'evidence_handler'
 
-module BEL::Extension::Translator
+module BEL::Extension
 
   module XBEL
 

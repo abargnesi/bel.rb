@@ -1,4 +1,4 @@
-module BEL::Extension::Translator
+module BEL::Extension
 
   module RDF
 
@@ -68,7 +68,7 @@ module BEL::Extension::Translator
           fx = @fx.respond_to?(:short_form) ? @fx.short_form : @fx.to_s.to_sym
           if [:p, :proteinAbundance].include?(fx) &&
              @arguments.find{ |x|
-               if x.is_a? BEL::Model::Term
+               if x.is_a? ::BEL::Model::Term
                  arg_fx = x.fx
                  arg_fx = arg_fx.respond_to?(:short_form) ? arg_fx.short_form : arg_fx.to_s.to_sym
                  [:pmod, :proteinModification].include?(arg_fx)
@@ -82,7 +82,7 @@ module BEL::Extension::Translator
 
           if [:p, :proteinAbundance].include?(fx) &&
              @arguments.find{ |x|
-               if x.is_a? BEL::Model::Term
+               if x.is_a? ::BEL::Model::Term
                  arg_fx = x.fx
                  arg_fx = arg_fx.respond_to?(:short_form) ? arg_fx.short_form : arg_fx.to_s.to_sym
                  BEL::RDF::PROTEIN_VARIANT.include?(arg_fx)
@@ -118,7 +118,7 @@ module BEL::Extension::Translator
         if [:p, :proteinAbundance].include?(fx)
           pmod =
             @arguments.find{ |x|
-              if x.is_a? BEL::Model::Term
+              if x.is_a? ::BEL::Model::Term
                 arg_fx = x.fx
                 arg_fx = arg_fx.respond_to?(:short_form) ? arg_fx.short_form : arg_fx.to_s.to_sym
                 [:pmod, :proteinModification].include?(arg_fx)
@@ -136,15 +136,15 @@ module BEL::Extension::Translator
               statements << [uri, BEL::RDF::BELV.hasModificationPosition, last.to_i]
             end
             # link root protein abundance as hasChild
-            root_param = @arguments.find{|x| x.is_a? BEL::Model::Parameter}
-            (root_id, root_statements) = BEL::Model::Term.new(:p, [root_param]).to_rdf
+            root_param = @arguments.find{|x| x.is_a? ::BEL::Model::Parameter}
+            (root_id, root_statements) = ::BEL::Model::Term.new(:p, [root_param]).to_rdf
             statements << [uri, BEL::RDF::BELV.hasChild, root_id]
             statements += root_statements
             return [uri, statements]
-          elsif @arguments.find{|x| x.is_a? BEL::Model::Term and BEL::RDF::PROTEIN_VARIANT.include? x.fx}
+          elsif @arguments.find{|x| x.is_a? ::BEL::Model::Term and BEL::RDF::PROTEIN_VARIANT.include? x.fx}
             # link root protein abundance as hasChild
-            root_param = @arguments.find{|x| x.is_a? BEL::Model::Parameter}
-            (root_id, root_statements) = BEL::Model::Term.new(:p, [root_param]).to_rdf
+            root_param = @arguments.find{|x| x.is_a? ::BEL::Model::Parameter}
+            (root_id, root_statements) = ::BEL::Model::Term.new(:p, [root_param]).to_rdf
             statements << [uri, BEL::RDF::BELV.hasChild, root_id]
             statements += root_statements
             return [uri, statements]
@@ -153,14 +153,14 @@ module BEL::Extension::Translator
 
         # BEL::RDF::BELV.hasConcept]
         @arguments.find_all{ |x|
-          x.is_a? BEL::Model::Parameter and x.ns != nil
+          x.is_a? ::BEL::Model::Parameter and x.ns != nil
         }.each do |param|
           concept_uri = param.ns.to_rdf_vocabulary[param.value.to_s]
           statements << [uri, BEL::RDF::BELV.hasConcept, BEL::RDF::RDF::URI(Addressable::URI.encode(concept_uri))]
         end
 
         # BEL::RDF::BELV.hasChild]
-        @arguments.find_all{|x| x.is_a? BEL::Model::Term}.each do |child|
+        @arguments.find_all{|x| x.is_a? ::BEL::Model::Term}.each do |child|
           (child_id, child_statements) = child.to_rdf
           statements << [uri, BEL::RDF::BELV.hasChild, child_id]
           statements += child_statements
@@ -251,7 +251,7 @@ module BEL::Extension::Translator
 
         # common statement triples
         statements << [uri, BEL::RDF::RDF.type, BEL::RDF::BELV.Statement]
-        statements << [uri, RDF::RDFS.label, to_s.force_encoding('UTF-8')]
+        statements << [uri, RUBYRDF::RDFS.label, to_s.force_encoding('UTF-8')]
 
         # evidence
         evidence_bnode = BEL::RDF::RDF::Node.uuid

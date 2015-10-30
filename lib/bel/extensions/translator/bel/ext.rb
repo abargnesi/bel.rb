@@ -37,11 +37,11 @@ module BEL::Extension
       end
 
       def read(data, options = {})
-        EvidenceYielder.new(data)
+        ::BEL::Extension::BEL::EvidenceYielder.new(data)
       end
 
       def write(objects, writer = StringIO.new, options = {})
-        BELYielder.new(objects).each { |bel_part|
+        ::BEL::Extension::BEL::BELYielder.new(objects).each { |bel_part|
           writer << "#{bel_part}"
           writer.flush
         }

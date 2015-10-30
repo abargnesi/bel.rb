@@ -52,13 +52,13 @@ module BEL::Extension
 
           # write first evidence object
           evidence = evidence_enum.next
-          writer  << ::BEL::JSON.write(wrap(evidence))
+          ::BEL::JSON.write(wrap(evidence), writer)
 
           # each successive evidence starts with a comma
           while true
             evidence = evidence_enum.next
             writer  << ","
-            writer  << ::BEL::JSON.write(wrap(evidence))
+            ::BEL::JSON.write(wrap(evidence), writer)
           end
         rescue StopIteration
           # end of evidence hashes
@@ -106,7 +106,7 @@ module BEL::Extension
           "#{evidence.bel_statement}\n",
           Hash[
             namespaces.map { |k, v|
-              [k, BEL::Namespace::NamespaceDefinition.new(k, v)]
+              [k, ::BEL::Namespace::NamespaceDefinition.new(k, v)]
             }
           ]
         ).select { |obj|

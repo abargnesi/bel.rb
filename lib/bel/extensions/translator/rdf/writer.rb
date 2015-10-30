@@ -1,4 +1,4 @@
-module BEL::Extension::Translator
+module BEL::Extension
 
   module RDF::Writer
 
@@ -13,7 +13,7 @@ module BEL::Extension::Translator
       def <<(evidence)
         triples = evidence.bel_statement.to_rdf[1]
         triples.each do |triple|
-          @writer.write_statement(RDF::Statement(*triple))
+          @writer.write_statement(::RDF::Statement(*triple))
         end
       end
 

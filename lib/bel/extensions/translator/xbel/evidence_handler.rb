@@ -1,6 +1,6 @@
 require 'rexml/streamlistener'
 
-module BEL::Extension::Translator
+module BEL::Extension
 
   module XBEL
 

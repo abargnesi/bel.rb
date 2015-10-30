@@ -1,28 +1,29 @@
 module BEL
   module Format
-    Translator      = BEL::Extension::Translator
-    TranslatorError = BEL::Extension::Translator::TranslatorError
 
     def self.evidence(input, input_format)
       prepared_input = process_input(input)
 
-      in_formatter  = Translator.formatters(input_format) or
-        raise TranslatorError.new(input_format)
+      translator = BEL:::Extension.system.find { |ext|
+        ext.id == input_format.to_sym
+      }
+      raise %Q{Translator for "#{input_format}" is not available.} unless translator
 
-      EvidenceIterable.new(prepared_input, in_formatter)
+      EvidenceIterable.new(prepared_input, translator)
     end
 
     def self.translate(input, input_format, output_format, writer = nil)
       prepared_input = process_input(input)
 
-      in_formatter  = Translator.translators(input_format) or
-        raise TranslatorError.new(input_format)
+      in_translator  = BEL::Extension.system.find { |ext|
+        ext.id == input_format.to_sym
+      }
+      out_translator = BEL::Extension.system.find { |ext|
+        ext.id == output_format.to_sym
+      }
 
-      out_formatter = Translator.translators(output_format) or
-        raise TranslatorError.new(output_format)
-
-      objects = in_formatter.deserialize(prepared_input)
-      output = out_formatter.serialize(objects, writer)
+      objects = in_translator.read(prepared_input)
+      output = out_translator.write(objects, writer)
     end
 
     def self.process_input(input)
@@ -39,14 +40,14 @@ module BEL
     class EvidenceIterable
       include Enumerable
 
-      def initialize(input, format)
-        @input  = input
-        @format = format
+      def initialize(input, translator)
+        @input      = input
+        @translator = translator
       end
 
       def each
         if block_given?
-          @format.deserialize(@input).each do |evidence|
+          @translator.read(@input).each do |evidence|
             yield evidence
           end
         else
