@@ -4,7 +4,7 @@ module BEL
     def self.evidence(input, input_format)
       prepared_input = process_input(input)
 
-      translator = BEL:::Extension.system.find { |ext|
+      translator = BEL::Extension.system.find { |ext|
         ext.id == input_format.to_sym
       }
       raise %Q{Translator for "#{input_format}" is not available.} unless translator
