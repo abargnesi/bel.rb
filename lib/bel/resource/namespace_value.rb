@@ -12,15 +12,16 @@ module BEL
       def initialize(rdf_repository, uri)
         @rdf_repository = rdf_repository
         @uri            = uri
+        @uri_hash       = uri.hash
         @eq_query       = [
-          :subject   => @uri,
+          :subject   => uri,
           :predicate => RDF::SKOS.exactMatch
         ]
         @ortho_query    = [
-          :subject   => @uri,
+          :subject   => uri,
           :predicate => BELV.orthologousMatch
         ]
-        @predicates     = @rdf_repository.query(:subject => @uri).
+        @predicates     = @rdf_repository.query(:subject => uri).
                             each.map(&:predicate).uniq
       end
 
@@ -39,6 +40,16 @@ module BEL
 						yield NamespaceValue.new(@rdf_repository, solution.object)
 					}
 			end
+
+      def hash
+        @uri_hash
+      end
+
+      def ==(other)
+        return false if other == nil
+        @uri == other.uri
+      end
+      alias_method :eql?, :'=='
 
       protected
 

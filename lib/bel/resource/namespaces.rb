@@ -54,20 +54,20 @@ module BEL
 					:predicate => BELV.prefix,
 					:object    => nlit
 				)
-			  return NamespaceValue.new(@rdf_repository, prefix.subject) if prefix
+			  return Namespace.new(@rdf_repository, prefix.subject) if prefix
 
         # match input as namespace prefLabel
 				label  = namespace_query(
 					:predicate => RDF::SKOS.prefLabel,
 					:object    => nlit
 				)
-				return NamespaceValue.new(@rdf_repository, label.subject) if label
+				return Namespace.new(@rdf_repository, label.subject) if label
       end
 
       def find_namespace_uri(uri)
         type_check = RDF::Statement(uri, RDF.type, BELV.NamespaceConceptScheme)
 				if @rdf_repository.has_statement?(type_check)
-          return NamespaceValue.new(@rdf_repository, uri)
+          return Namespace.new(@rdf_repository, uri)
         end
 			end
 

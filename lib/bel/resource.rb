@@ -4,6 +4,9 @@ module BEL
   module Resource
 
     class BELV < RDF::StrictVocabulary('http://www.openbel.org/vocabulary/')
+      term     :AnnotationConcept
+      term     :AnnotationConceptScheme
+      term     :NamespaceConcept
       term     :NamespaceConceptScheme
 
       property :prefix
