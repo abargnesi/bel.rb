@@ -53,7 +53,7 @@ CSV do |csv_out|
         report[:empty_statement_groups] += 1
       end
     end
-    if obj.is_a? BEL::Model::Term
+    if obj.is_a? BEL::Nanopub::Term
       fx = obj.fx
       fx = fx.respond_to?(:long_form) ?
              fx.long_form.to_s :
@@ -61,7 +61,7 @@ CSV do |csv_out|
       fx = FUNCTIONS[fx.to_sym][:long_form]
       report["fx_#{fx}"] += 1
     end
-    if obj.is_a? BEL::Model::Statement
+    if obj.is_a? BEL::Nanopub::Statement
       report[:statement_count] += 1
       obj.relationship = case obj.relationship
       when :"->"

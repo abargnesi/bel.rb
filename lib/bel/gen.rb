@@ -3,7 +3,7 @@ require          'bel'
 module BEL
 
   # The {Gen} module defines submodules that generate random data that
-  # represent parts of the {::BEL::Model evidence model}.
+  # represent parts of a {::BEL::Nanopub nanopub}.
   module Gen
 
     # Requires +paths+ treated as a soft dependency to bel.rb.

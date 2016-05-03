@@ -6,7 +6,7 @@ module BEL::Translator::Plugins
 
     class EvidenceHandler
       include REXML::StreamListener
-      include ::BEL::Model
+      include ::BEL::Nanopub
 
       ANNOTATION                     = "annotation"
       ANNOTATION_DEFINITION_GROUP    = "annotationDefinitionGroup"

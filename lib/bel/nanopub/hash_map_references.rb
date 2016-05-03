@@ -1,7 +1,7 @@
 require_relative 'map_references'
 
 module BEL
-  module Model
+  module Nanopub
     class HashMapReferences
       include MapReferences
 

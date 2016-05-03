@@ -10,7 +10,7 @@ module BEL
     # mixin.
     module ClassMethods
 
-      # Return a stream of {::BEL::Model::Evidence} objects for the input.
+      # Return a stream of {::BEL::Nanopub::Evidence} objects for the input.
       #
       # @param  [IO]                     input        the IO to read from
       # @param  [Symbol]                 input_format the symbol that can be
@@ -18,7 +18,7 @@ module BEL
       #         +input+
       # @param  [Hash{Symbol => Object}] options
       # @return [#each]                  an object that responds to +each+ and
-      #         provides {::BEL::Model::Evidence} objects
+      #         provides {::BEL::Nanopub::Evidence} objects
       def evidence(input, input_format, options = {})
         prepared_input = process_input(input)
 
@@ -29,7 +29,7 @@ module BEL
       end
 
       # Translate from one file format to another using
-      # {::BEL::Model::Evidence} as a shared model. The translation is written
+      # {::BEL::Nanopub::Evidence} as a shared model. The translation is written
       # to the IO +writer+ directly.
       #
       # @param  [IO]                     input         the IO to read from

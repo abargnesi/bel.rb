@@ -6,9 +6,9 @@ module BEL
   #
   # - Read
   #   - {#read}:            read the input format and parse to
-  #     {::BEL::Model::Evidence} objects
+  #     {::BEL::Nanopub::Evidence} objects
   # - Write
-  #   - {#write}:           write {::BEL::Model::Evidence} objects to the
+  #   - {#write}:           write {::BEL::Nanopub::Evidence} objects to the
   #     output format
   #
   # @example Create a translator for conversion of YAML <-> BEL Evidence.
@@ -85,7 +85,7 @@ module BEL
     # @param  [IO, String]             data the data to read
     # @param  [Hash{Symbol => Object}] options
     # @return [#each]                  an object that responds to +each+ and
-    #         provides {::BEL::Model::Evidence} objects
+    #         provides {::BEL::Nanopub::Evidence} objects
     def read(data, options = {})
       raise NotImplementedError.new("#{__method__} is not implemented.")
     end
@@ -93,7 +93,7 @@ module BEL
     # Writes BEL evidence +data+ to the provided IO +writer+.
     #
     # @param  [#each]                  data an object that responds to +each+ and
-    #         provides {::BEL::Model::Evidence} objects
+    #         provides {::BEL::Nanopub::Evidence} objects
     # @param  [IO]                     writer an IO to write to
     # @param  [Hash{Symbol => Object}] options
     # @return [IO]                     the IO that was written to

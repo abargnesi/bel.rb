@@ -1,7 +1,7 @@
 require_relative 'hash_map_references'
 
 module BEL
-  module Model
+  module Nanopub
 
     # EvidenceReferenceCombiner is responsible for disambiguating evidence
     # with overlapping sets of annotation/namespace references. This can occur
@@ -45,7 +45,7 @@ module BEL
 
           evidence_array.each do |evidence|
             if evidence.bel_statement.is_a?(String)
-              evidence.bel_statement = BEL::Model::Evidence.parse_statement(evidence)
+              evidence.bel_statement = BEL::Nanopub::Evidence.parse_statement(evidence)
             end
             yield rewrite_evidence!(evidence, map_references)
           end
@@ -63,7 +63,7 @@ module BEL
         namespaces  = []
         buffered_evidence = evidence_collection.each.map { |evidence|
           annotations, remap =
-            BEL::Model.union_annotation_references(
+            BEL::Nanopub.union_annotation_references(
               annotations,
               evidence.references.annotations,
               'incr'
@@ -71,7 +71,7 @@ module BEL
           annotation_reference_map.merge!(remap)
 
           namespaces, remap =
-            BEL::Model.union_namespace_references(
+            BEL::Nanopub.union_namespace_references(
               namespaces,
               evidence.references.namespaces,
               'incr'
@@ -121,9 +121,9 @@ module BEL
         obj = statement.object
         if obj
           case obj
-          when ::BEL::Model::Statement
+          when ::BEL::Nanopub::Statement
             rewrite_statement!(obj, namespace_references, map_references)
-          when ::BEL::Model::Term
+          when ::BEL::Nanopub::Term
             rewrite_term!(obj, keyword_to_reference, map_references)
           end
         end
@@ -134,7 +134,7 @@ module BEL
 
         term.arguments.each do |arg|
           case arg
-          when ::BEL::Model::Parameter
+          when ::BEL::Nanopub::Parameter
             if arg.ns
               prefix =
                 if arg.ns.respond_to?(:prefix)
@@ -151,7 +151,7 @@ module BEL
                 )
               end
             end
-          when ::BEL::Model::Term
+          when ::BEL::Nanopub::Term
             rewrite_term!(arg, keyword_to_reference, map_references)
           end
         end

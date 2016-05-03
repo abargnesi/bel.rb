@@ -2,7 +2,7 @@ require 'forwardable'
 require 'set'
 
 module BEL
-  module Model
+  module Nanopub
     class References
 
       attr_reader :values

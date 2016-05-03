@@ -1,6 +1,6 @@
 require 'bel'
 
-describe 'Compare Evidence Model across Translator plugins' do
+describe 'Compare Nanopub model across Translator plugins' do
 
   context 'Starting with a BEL Script fragment' do
 

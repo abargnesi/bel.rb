@@ -5,7 +5,7 @@ module BELRDF
 
       BELV = BELRDF::BELV
 
-      include ::BEL::Model
+      include ::BEL::Nanopub
       include ::BEL::Quoting
 
       # Find described resources by +type+ in +graph+.

@@ -1,7 +1,7 @@
 module BEL
-  module Model
+  module Nanopub
 
-    # A Citation describes a cited reference which {Evidence} is derived from.
+    # A Citation describes a cited reference which {Nanopub} is derived from.
     #
     # @attr [String] type the type of resource the cited material appears in
     #       (e.g. PubMed, Journal, Book, Online Resource, etc...)

@@ -1,7 +1,7 @@
 require 'forwardable'
 
 module BEL
-  module Model
+  module Nanopub
     class SummaryText
       extend Forwardable
 

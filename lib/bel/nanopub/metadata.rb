@@ -1,7 +1,7 @@
 require 'forwardable'
 
 module BEL
-  module Model
+  module Nanopub
     class Metadata
 
       attr_reader :values

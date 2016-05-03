@@ -82,7 +82,7 @@ module BEL::Translator::Plugins
 
       def unwrap(hash)
         evidence_hash          = hash[EVIDENCE_ROOT]
-        evidence               = ::BEL::Model::Evidence.create(evidence_hash)
+        evidence               = ::BEL::Nanopub::Evidence.create(evidence_hash)
 
         evidence.bel_statement = parse_statement(evidence)
         evidence
@@ -98,7 +98,7 @@ module BEL::Translator::Plugins
             }
           ]
         ).select { |obj|
-          obj.is_a? ::BEL::Model::Statement
+          obj.is_a? ::BEL::Nanopub::Statement
         }.first
       end
 

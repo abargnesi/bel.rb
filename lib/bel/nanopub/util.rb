@@ -1,8 +1,8 @@
 module BEL
-  module Model
+  module Nanopub
 
     def self.union_namespace_references(destination, source, suffix = 'incr')
-      BEL::Model.union_by_keyword(
+      BEL::Nanopub.union_by_keyword(
         destination,
         source,
         suffix
@@ -10,7 +10,7 @@ module BEL
     end
 
     def self.union_annotation_references(destination, source, suffix = 'incr')
-      BEL::Model.union_by_keyword(
+      BEL::Nanopub.union_by_keyword(
         destination,
         source,
         suffix

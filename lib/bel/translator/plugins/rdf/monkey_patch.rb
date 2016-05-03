@@ -4,7 +4,7 @@ require_relative 'uuid'
 
 module BELRDF
 
-  # OpenClass to contribute RDF functionality to BEL Model.
+  # OpenClass to contribute RDF functionality to BEL Nanopub objects.
 
   class ::BEL::Namespace::NamespaceDefinition
 
@@ -19,7 +19,7 @@ module BELRDF
     end
   end
 
-  class ::BEL::Model::Parameter
+  class ::BEL::Nanopub::Parameter
 
     CONCEPT_ENCODING = {
       :G => BELRDF::BELV.GeneConcept,
@@ -71,7 +71,7 @@ module BELRDF
     end
   end
 
-  class ::BEL::Model::Term
+  class ::BEL::Nanopub::Term
 
     def to_uri
       tid = to_s.squeeze(')').gsub(/[")\[\]]/, '').gsub(/[(:, ]/, '_')
@@ -83,7 +83,7 @@ module BELRDF
         fx = @fx.respond_to?(:short_form) ? @fx.short_form : @fx.to_s.to_sym
         if [:p, :proteinAbundance].include?(fx) &&
            @arguments.find{ |x|
-             if x.is_a? ::BEL::Model::Term
+             if x.is_a? ::BEL::Nanopub::Term
                arg_fx = x.fx
                arg_fx = arg_fx.respond_to?(:short_form) ? arg_fx.short_form : arg_fx.to_s.to_sym
                [:pmod, :proteinModification].include?(arg_fx)
@@ -97,7 +97,7 @@ module BELRDF
 
         if [:p, :proteinAbundance].include?(fx) &&
            @arguments.find{ |x|
-             if x.is_a? ::BEL::Model::Term
+             if x.is_a? ::BEL::Nanopub::Term
                arg_fx = x.fx
                arg_fx = arg_fx.respond_to?(:short_form) ? arg_fx.short_form : arg_fx.to_s.to_sym
                BELRDF::PROTEIN_VARIANT.include?(arg_fx)
@@ -133,7 +133,7 @@ module BELRDF
       if [:p, :proteinAbundance].include?(fx)
         pmod =
           @arguments.find{ |x|
-            if x.is_a? ::BEL::Model::Term
+            if x.is_a? ::BEL::Nanopub::Term
               arg_fx = x.fx
               arg_fx = arg_fx.respond_to?(:short_form) ? arg_fx.short_form : arg_fx.to_s.to_sym
               [:pmod, :proteinModification].include?(arg_fx)
@@ -151,15 +151,15 @@ module BELRDF
             statements << ::RDF::Statement.new(uri, BELRDF::BELV.hasModificationPosition, last.to_i, :graph_name => graph_name)
           end
           # link root protein abundance as hasChild
-          root_param = @arguments.find{|x| x.is_a? ::BEL::Model::Parameter}
-          (root_id, root_statements) = ::BEL::Model::Term.new(:p, [root_param]).to_rdf(graph_name, remap)
+          root_param = @arguments.find{|x| x.is_a? ::BEL::Nanopub::Parameter}
+          (root_id, root_statements) = ::BEL::Nanopub::Term.new(:p, [root_param]).to_rdf(graph_name, remap)
           statements << ::RDF::Statement.new(uri, BELRDF::BELV.hasChild, root_id, :graph_name => graph_name)
           statements.concat(root_statements)
           return [uri, statements]
-        elsif @arguments.find{|x| x.is_a? ::BEL::Model::Term and BELRDF::PROTEIN_VARIANT.include? x.fx}
+        elsif @arguments.find{|x| x.is_a? ::BEL::Nanopub::Term and BELRDF::PROTEIN_VARIANT.include? x.fx}
           # link root protein abundance as hasChild
-          root_param = @arguments.find{|x| x.is_a? ::BEL::Model::Parameter}
-          (root_id, root_statements) = ::BEL::Model::Term.new(:p, [root_param]).to_rdf(graph_name, remap)
+          root_param = @arguments.find{|x| x.is_a? ::BEL::Nanopub::Parameter}
+          (root_id, root_statements) = ::BEL::Nanopub::Term.new(:p, [root_param]).to_rdf(graph_name, remap)
           statements << ::RDF::Statement.new(uri, BELRDF::BELV.hasChild, root_id, :graph_name => graph_name)
           statements.concat(root_statements)
           return [uri, statements]
@@ -168,7 +168,7 @@ module BELRDF
 
       # BELRDF::BELV.hasConcept
       @arguments.find_all{ |x|
-        x.is_a? ::BEL::Model::Parameter and x.ns != nil
+        x.is_a? ::BEL::Nanopub::Parameter and x.ns != nil
       }.each do |param|
         param_uri, encoding_statements = param.to_rdf(graph_name, remap)
         statements.concat(encoding_statements)
@@ -176,7 +176,7 @@ module BELRDF
       end
 
       # BELRDF::BELV.hasChild]
-      @arguments.find_all{|x| x.is_a? ::BEL::Model::Term}.each do |child|
+      @arguments.find_all{|x| x.is_a? ::BEL::Nanopub::Term}.each do |child|
         (child_id, child_statements) = child.to_rdf(graph_name, remap)
         statements << ::RDF::Statement.new(uri, BELRDF::BELV.hasChild, child_id, :graph_name => graph_name)
         statements.concat(child_statements)
@@ -186,7 +186,7 @@ module BELRDF
     end
   end
 
-  class ::BEL::Model::Statement
+  class ::BEL::Nanopub::Statement
 
     def to_uri
       case
@@ -337,7 +337,7 @@ module BELRDF
     end
   end
 
-  class ::BEL::Model::Evidence
+  class ::BEL::Nanopub::Evidence
 
     def to_uri
       BELRDF::BELE[BELRDF.generate_uuid]
@@ -347,7 +347,7 @@ module BELRDF
       uri                       = to_uri
 
       # parse BEL statement if necessary
-      unless self.bel_statement.is_a?(::BEL::Model::Statement)
+      unless self.bel_statement.is_a?(::BEL::Nanopub::Statement)
         self.bel_statement = self.class.parse_statement(self)
       end
 

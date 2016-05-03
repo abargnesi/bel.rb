@@ -1,5 +1,5 @@
 module BEL
-  module Model
+  module Nanopub
 
     class StreamingEvidenceCombiner
 

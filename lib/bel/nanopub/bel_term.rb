@@ -1,6 +1,6 @@
 require_relative '../language'
 module BEL
-  module Model
+  module Nanopub
     class Term
       include BEL::Language
       include Comparable

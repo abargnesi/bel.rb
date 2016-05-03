@@ -20,17 +20,17 @@ module BEL::Translator::Plugins
         if block_given?
           combiner =
             if @streaming
-              BEL::Model::StreamingEvidenceCombiner.new(@data)
+              BEL::Nanopub::StreamingEvidenceCombiner.new(@data)
             elsif @annotation_reference_map && @namespace_reference_map
-              BEL::Model::MapReferencesCombiner.new(
+              BEL::Nanopub::MapReferencesCombiner.new(
                 @data,
-                BEL::Model::HashMapReferences.new(
+                BEL::Nanopub::HashMapReferences.new(
                   @annotation_reference_map,
                   @namespace_reference_map
                 )
               )
             else
-              BEL::Model::BufferingEvidenceCombiner.new(@data)
+              BEL::Nanopub::BufferingEvidenceCombiner.new(@data)
             end
 
           header_flag = true
@@ -97,7 +97,7 @@ module BEL::Translator::Plugins
       def self.statement(statement, el_statement)
         if statement.is_a?(String)
           statement = BEL::Script.parse(statement.to_s).find { |x|
-            x.is_a? BEL::Model::Statement
+            x.is_a? BEL::Nanopub::Statement
           }
           return el_statement if statement == nil
         end
@@ -131,9 +131,9 @@ module BEL::Translator::Plugins
         el_object = REXML::Element.new('bel:object')
 
         case object
-        when ::BEL::Model::Term
+        when ::BEL::Nanopub::Term
           el_object.add_element(self.term(object))
-        when ::BEL::Model::Statement
+        when ::BEL::Nanopub::Statement
           el_statement = REXML::Element.new('bel:statement')
           el_object.add_element(el_statement)
           self.statement(object, el_statement)
@@ -153,9 +153,9 @@ module BEL::Translator::Plugins
 
         term.arguments.each do |arg|
           case arg
-          when ::BEL::Model::Term
+          when ::BEL::Nanopub::Term
             el_term.add_element(self.term(arg))
-          when ::BEL::Model::Parameter
+          when ::BEL::Nanopub::Parameter
             el_term.add_element(self.parameter(arg))
           end
         end
@@ -177,7 +177,7 @@ module BEL::Translator::Plugins
           el_ag.add_element(self.citation(evidence.citation))
         end
 
-        # XBEL evidence (::BEL::Model::SummaryText)
+        # XBEL evidence (::BEL::Nanopub::SummaryText)
         if evidence.summary_text && evidence.summary_text.value
           xbel_evidence      = REXML::Element.new('bel:evidence')
           xbel_evidence.text = evidence.summary_text.value

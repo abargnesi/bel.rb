@@ -7,7 +7,7 @@ require_relative 'references'
 require_relative 'metadata'
 
 module BEL
-  module Model
+  module Nanopub
 
     class Evidence
       def self.create(hash)
@@ -36,7 +36,7 @@ module BEL
             }
           ]
         ).select { |obj|
-          obj.is_a? ::BEL::Model::Statement
+          obj.is_a? ::BEL::Nanopub::Statement
         }.first
       end
 
@@ -119,7 +119,7 @@ module BEL
             }
           ]
         ).select { |obj|
-          obj.is_a? ::BEL::Model::Statement
+          obj.is_a? ::BEL::Nanopub::Statement
         }.first
       end
     end

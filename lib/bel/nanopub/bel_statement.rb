@@ -1,5 +1,5 @@
 module BEL
-  module Model
+  module Nanopub
 
     # A {Statement} captures a BEL statement composed of a subject {Term},
     # +relationship+, and object {Term}. A {Statement} may be one of the

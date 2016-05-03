@@ -8,7 +8,7 @@ BEL.translator(:ntriples)
 include BEL::Language
 BEL::Language.include_bel_dsl
 
-include BEL::Model
+include BEL::Nanopub
 include BEL::Namespace
 
 BELV = BELRDF::BELV
