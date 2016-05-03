@@ -86,7 +86,7 @@
 
 require 'observer'
 require_relative 'language'
-require_relative 'evidence_model'
+require_relative 'nanopub'
 
 module BEL
   module Script

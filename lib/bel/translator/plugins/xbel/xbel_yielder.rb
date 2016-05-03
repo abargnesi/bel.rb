@@ -20,7 +20,7 @@ module BEL::Translator::Plugins
         if block_given?
           combiner =
             if @streaming
-              BEL::Nanopub::StreamingEvidenceCombiner.new(@data)
+              BEL::Nanopub::StreamingNanopubCombiner.new(@data)
             elsif @annotation_reference_map && @namespace_reference_map
               BEL::Nanopub::MapReferencesCombiner.new(
                 @data,
@@ -30,7 +30,7 @@ module BEL::Translator::Plugins
                 )
               )
             else
-              BEL::Nanopub::BufferingEvidenceCombiner.new(@data)
+              BEL::Nanopub::BufferingNanopubCombiner.new(@data)
             end
 
           header_flag = true
@@ -40,14 +40,14 @@ module BEL::Translator::Plugins
           yield start_element_string(el_document)
 
           el_statement_group = nil
-          evidence_count = 0
-          combiner.each { |evidence|
+          nanopub_count = 0
+          combiner.each { |nanopub|
             if header_flag
               # document header
               el_statement_group = XBELYielder.statement_group
 
               yield element_string(
-                XBELYielder.header(evidence.metadata.document_header)
+                XBELYielder.header(nanopub.metadata.document_header)
               )
               yield element_string(
                 XBELYielder.namespace_definitions(combiner.namespace_references)
@@ -61,11 +61,11 @@ module BEL::Translator::Plugins
               header_flag = false
             end
 
-            yield element_string(XBELYielder.evidence(evidence))
-            evidence_count += 1
+            yield element_string(XBELYielder.nanopub(nanopub))
+            nanopub_count += 1
           }
 
-          if evidence_count > 0
+          if nanopub_count > 0
             yield end_element_string(el_statement_group)
           else
             # empty head sections; required for XBEL schema
@@ -84,11 +84,11 @@ module BEL::Translator::Plugins
         end
       end
 
-      def self.evidence(evidence)
-        statement    = evidence.bel_statement
+      def self.nanopub(nanopub)
+        statement    = nanopub.bel_statement
         el_statement = REXML::Element.new('bel:statement')
 
-        el_statement.add_element(self.annotation_group(evidence))
+        el_statement.add_element(self.annotation_group(nanopub))
         self.statement(statement, el_statement)
 
         el_statement
@@ -169,22 +169,22 @@ module BEL::Translator::Plugins
         el_parameter
       end
 
-      def self.annotation_group(evidence)
+      def self.annotation_group(nanopub)
         el_ag = REXML::Element.new('bel:annotationGroup')
 
         # XBEL citation
-        if evidence.citation && evidence.citation.valid?
-          el_ag.add_element(self.citation(evidence.citation))
+        if nanopub.citation && nanopub.citation.valid?
+          el_ag.add_element(self.citation(nanopub.citation))
         end
 
-        # XBEL evidence (::BEL::Nanopub::SummaryText)
-        if evidence.summary_text && evidence.summary_text.value
-          xbel_evidence      = REXML::Element.new('bel:evidence')
-          xbel_evidence.text = evidence.summary_text.value
-          el_ag.add_element(xbel_evidence)
+        # XBEL nanopub (::BEL::Nanopub::SummaryText)
+        if nanopub.summary_text && nanopub.summary_text.value
+          xbel_nanopub      = REXML::Element.new('bel:nanopub')
+          xbel_nanopub.text = nanopub.summary_text.value
+          el_ag.add_element(xbel_nanopub)
         end
 
-        evidence.experiment_context.each do |annotation|
+        nanopub.experiment_context.each do |annotation|
           name, value = annotation.values_at(:name, :value)
 
           if value.respond_to?(:each)
@@ -204,9 +204,9 @@ module BEL::Translator::Plugins
           end
         end
 
-        metadata_keys = evidence.metadata.keys - [:document_header]
+        metadata_keys = nanopub.metadata.keys - [:document_header]
         metadata_keys.each do |k|
-          v = evidence.metadata[k]
+          v = nanopub.metadata[k]
           if v.respond_to?(:each)
             v.each do |value|
               el_anno      = REXML::Element.new('bel:annotation')

@@ -15,7 +15,7 @@ module BEL
       include BEL::Gen::Annotation
 
       # Returns a sampled annotation as a hash of +:name+ and +:value+. These
-      # can be added directly to an evidence's {BEL::Nanopub::ExperimentContext}.
+      # can be added directly to a nanopubs's {BEL::Nanopub::ExperimentContext}.
       #
       # @return [Hash] sampled annotation; hash of +:name+ and +:value+
       def annotation

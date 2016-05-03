@@ -67,7 +67,7 @@ module BEL
       #
       # Note: This method has a good chance to return the last generated
       # {BEL::Nanopub::Citation}. This behavior better models curated BEL
-      # Evidence where many BEL statements have the same citation.
+      # nanopubs where many BEL statements have the same citation.
       #
       # @return [BEL::Nanopub::Citation] a random citation
       def citation

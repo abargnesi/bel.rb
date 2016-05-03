@@ -28,12 +28,12 @@ module BEL::Translator::Plugins
           :edges => []
         }
 
-        objects.each do |evidence|
-          unless evidence.bel_statement.is_a?(::BEL::Nanopub::Statement)
-            evidence.bel_statement = ::BEL::Nanopub::Evidence.parse_statement(evidence)
+        objects.each do |nanopub|
+          unless nanopub.bel_statement.is_a?(::BEL::Nanopub::Statement)
+            nanopub.bel_statement = ::BEL::Nanopub::Nanopub.parse_statement(nanopub)
           end
 
-          stmt    = evidence.bel_statement
+          stmt    = nanopub.bel_statement
           subject = stmt.subject.to_bel
 
           graph[:nodes] << {
@@ -104,7 +104,7 @@ module BEL::Translator::Plugins
           )
         end
 
-        # map statements to evidence objects
+        # map statements to nanopub objects
         bel_statements.map { |bel_statement|
           graph_name = graph[:label] || graph[:id] || 'BEL Graph'
           metadata   = ::BEL::Nanopub::Metadata.new
@@ -152,7 +152,7 @@ module BEL::Translator::Plugins
           end
           references.namespaces = namespaces if namespaces
 
-          ::BEL::Nanopub::Evidence.create(
+          ::BEL::Nanopub::Nanopub.create(
             :bel_statement => bel_statement,
             :metadata      => metadata,
             :references    => references

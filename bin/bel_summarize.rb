@@ -31,7 +31,7 @@ CSV do |csv_out|
     statement_group_count: 0,
     empty_statement_groups: 0,
     statement_count: 0,
-    evidence_count: 0
+    support_count: 0
   }
 
   FUNCTIONS.each do |k, v|
@@ -83,7 +83,7 @@ CSV do |csv_out|
       end
     end
     if obj.is_a? BEL::Language::Annotation
-      report[:evidence_count] += 1 if obj.name == 'Evidence'
+      report[:support_count] += 1 if obj.name == 'Support'
     end
   end
 

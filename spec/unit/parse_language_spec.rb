@@ -75,7 +75,7 @@ SET Cell = "Endothelial Cells"
 SET Citation = {"PubMed","The Biochemical journal","12444918","","Houslay MD|Adams DR",""}
 SET Tissue = {"Endothelium, Vascular","vascular tissue"}
 SET Species = 9606
-SET Evidence = "Arterial cells are highly susceptible to oxidative stress, which can induce both necrosis
+SET Support = "Arterial cells are highly susceptible to oxidative stress, which can induce both necrosis
 and apoptosis (programmed cell death) [1,2]"\n}
     objects = BEL::Script.parse(annotations).to_a
     expect(objects).to be
@@ -103,7 +103,7 @@ SET Cell = "Endothelial Cells"
 SET Citation = {"PubMed","The Biochemical journal","12444918","","Houslay MD|Adams DR",""}
 SET Tissue = {"Endothelium, Vascular","vascular tissue"}
 SET Species = 9606
-SET Evidence = "Arterial cells are highly susceptible to oxidative stress, which can induce both necrosis
+SET Support = "Arterial cells are highly susceptible to oxidative stress, which can induce both necrosis
 and apoptosis (programmed cell death) [1,2]"\n}
 
     BEL::Script.parse(annotations) do |obj|

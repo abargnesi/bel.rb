@@ -1,4 +1,4 @@
-require          'bel/evidence_model'
+require          'bel/nanopub'
 require_relative 'bel_schema'
 require_relative 'uuid'
 
@@ -270,11 +270,11 @@ module BELRDF
       statements << ::RDF::Statement.new(uri, BELRDF::RDF.type, BELRDF::BELV.Statement,     :graph_name => graph_name)
       statements << ::RDF::Statement.new(uri, BELRDF::RDFS.label, to_s.force_encoding('UTF-8'),  :graph_name => graph_name)
 
-      # evidence
-      evidence    = BELRDF::BELE[BELRDF.generate_uuid]
-      statements << ::RDF::Statement.new(evidence, BELRDF::RDF.type, BELRDF::BELV.Evidence, :graph_name => graph_name)
-      statements << ::RDF::Statement.new(uri, BELRDF::BELV.hasEvidence, evidence,             :graph_name => graph_name)
-      statements << ::RDF::Statement.new(evidence, BELRDF::BELV.hasStatement, uri,            :graph_name => graph_name)
+      # nanopub
+      nanopub    = BELRDF::BELE[BELRDF.generate_uuid]
+      statements << ::RDF::Statement.new(nanopub, BELRDF::RDF.type, BELRDF::BELV.Nanopub, :graph_name => graph_name)
+      statements << ::RDF::Statement.new(uri, BELRDF::BELV.hasNanopub, nanopub,             :graph_name => graph_name)
+      statements << ::RDF::Statement.new(nanopub, BELRDF::BELV.hasStatement, uri,            :graph_name => graph_name)
 
       # citation
       citation = @annotations.delete('Citation')
@@ -282,15 +282,15 @@ module BELRDF
         value = citation.value.map{|x| x.gsub('"', '')}
         if citation and value[0] == 'PubMed'
           pid = value[2]
-          statements << ::RDF::Statement.new(evidence, BELRDF::BELV.hasCitation, BELRDF::PUBMED[pid], :graph_name => graph_name)
+          statements << ::RDF::Statement.new(nanopub, BELRDF::BELV.hasCitation, BELRDF::PUBMED[pid], :graph_name => graph_name)
         end
       end
 
-      # evidence
-      evidence_text = @annotations.delete('Evidence')
-      if evidence_text
-        value = evidence_text.value.gsub('"', '').force_encoding('UTF-8')
-        statements << ::RDF::Statement.new(evidence, BELRDF::BELV.hasEvidenceText, value, :graph_name => graph_name)
+      # nanopub
+      support = @annotations.delete('Support')
+      if support
+        value = support.value.gsub('"', '').force_encoding('UTF-8')
+        statements << ::RDF::Statement.new(nanopub, BELRDF::BELV.hasSupport, value, :graph_name => graph_name)
       end
 
       # annotations
@@ -318,7 +318,7 @@ module BELRDF
           annotation_scheme = anno_rdf_uri ? anno_rdf_uri : BELRDF::const_get(name)
           [anno.value].flatten.map{|x| x.gsub('"', '')}.each do |val|
             value_uri = BELRDF::RDF::URI(URI.encode(annotation_scheme + val.to_s))
-            statements << ::RDF::Statement.new(evidence, BELRDF::BELV.hasAnnotation, value_uri, :graph_name => graph_name)
+            statements << ::RDF::Statement.new(nanopub, BELRDF::BELV.hasAnnotation, value_uri, :graph_name => graph_name)
           end
         end
       end
@@ -337,7 +337,7 @@ module BELRDF
     end
   end
 
-  class ::BEL::Nanopub::Evidence
+  class ::BEL::Nanopub::Nanopub
 
     def to_uri
       BELRDF::BELE[BELRDF.generate_uuid]
@@ -354,8 +354,8 @@ module BELRDF
       # convert BEL statement to RDF
       statement_uri, statements = bel_statement.to_rdf(uri, remap)
 
-      statements << ::RDF::Statement.new(uri,           BELRDF::RDF.type,          BELRDF::BELV.Evidence, :graph_name => uri)
-      statements << ::RDF::Statement.new(statement_uri, BELRDF::BELV.hasEvidence,  uri,                     :graph_name => uri)
+      statements << ::RDF::Statement.new(uri,           BELRDF::RDF.type,          BELRDF::BELV.Nanopub, :graph_name => uri)
+      statements << ::RDF::Statement.new(statement_uri, BELRDF::BELV.hasNanopub,  uri,                     :graph_name => uri)
       statements << ::RDF::Statement.new(uri,           BELRDF::BELV.hasStatement, statement_uri,           :graph_name => uri)
 
       annotations = bel_statement.annotations
@@ -370,11 +370,11 @@ module BELRDF
         end
       end
 
-      # evidence
-      evidence_text = annotations.delete('Evidence')
-      if evidence_text
-        value = evidence_text.value.gsub('"', '').force_encoding('UTF-8')
-        statements << ::RDF::Statement.new(uri, BELRDF::BELV.hasEvidenceText, value, :graph_name => uri)
+      # support
+      support = annotations.delete('Support')
+      if support
+        value = support.value.gsub('"', '').force_encoding('UTF-8')
+        statements << ::RDF::Statement.new(uri, BELRDF::BELV.hasSupport, value, :graph_name => uri)
       end
 
       # annotations

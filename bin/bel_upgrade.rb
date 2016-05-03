@@ -75,7 +75,7 @@ end
 
 class Main
 
-  EvidenceMatcher = Regexp.compile(/SET Evidence = ([0-9a-zA-Z]+)/)
+  SupportMatcher = Regexp.compile(/SET Support = ([0-9a-zA-Z]+)/)
   LostReplaceValues = ['unresolved', 'withdrawn']
   attr_reader :ttl
 
@@ -141,11 +141,11 @@ class Main
         end
       end
 
-      # evidence always needs quoting; backwards-compatibility
+      # support always needs quoting; backwards-compatibility
       if obj.is_a? BEL::Language::Annotation
-        if obj.name == 'Evidence'
+        if obj.name == 'Support'
           ev = obj.to_s
-          ev.gsub!(EvidenceMatcher, 'SET Evidence = "\1"')
+          ev.gsub!(SupportMatcher, 'SET Support = "\1"')
           puts ev.to_s
           next
         # look for replacement values for annotations  

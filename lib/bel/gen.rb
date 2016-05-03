@@ -45,7 +45,7 @@ require_relative 'gen/namespace'
 require_relative 'gen/parameter'
 require_relative 'gen/term'
 require_relative 'gen/statement'
-require_relative 'gen/evidence'
+require_relative 'gen/nanopub'
 require_relative 'gen/sample_resources'
 
 # vim: ts=2 sw=2:

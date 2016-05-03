@@ -1,11 +1,11 @@
 module BEL
   module Nanopub
 
-    class MapReferencesCombiner < BufferingEvidenceCombiner
+    class MapReferencesCombiner < BufferingNanopubCombiner
 
-      def initialize(evidence_collection, map_references)
-        @evidence_collection   = evidence_collection
-        @map_references        = map_references
+      def initialize(nanopub_collection, map_references)
+        @nanopub_collection = nanopub_collection
+        @map_references     = map_references
       end
 
       def annotation_references
@@ -18,8 +18,8 @@ module BEL
 
       def each
         if block_given?
-          @evidence_collection.each do |evidence|
-            yield rewrite_evidence!(evidence, @map_references)
+          @nanopub_collection.each do |nanopub|
+            yield rewrite_nanopub!(nanopub, @map_references)
           end
         else
           to_enum(:each)
