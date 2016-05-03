@@ -1,7 +1,7 @@
 require 'bel'
 
 require_relative 'citation'
-require_relative 'summary_text'
+require_relative 'support'
 require_relative 'experiment_context'
 require_relative 'references'
 require_relative 'metadata'
@@ -11,14 +11,14 @@ module BEL
 
     class Nanopub
       def self.create(hash)
-        ev = Nanopub.new
-        ev.bel_statement      = hash[:bel_statement] || nil
-        ev.citation           = Citation.new(hash[:citation] || {})
-        ev.summary_text.value = hash[:support] || nil
-        ev.experiment_context = ExperimentContext.new(hash[:experiment_context] || [])
-        ev.references         = References.new(hash[:references] || {})
-        ev.metadata           = Metadata.new(hash[:metadata] || {})
-        ev
+        nanopub = Nanopub.new
+        nanopub.bel_statement      = hash[:bel_statement] || nil
+        nanopub.citation           = Citation.new(hash[:citation] || {})
+        nanopub.support.value      = hash[:support] || nil
+        nanopub.experiment_context = ExperimentContext.new(hash[:experiment_context] || [])
+        nanopub.references         = References.new(hash[:references] || {})
+        nanopub.metadata           = Metadata.new(hash[:metadata] || {})
+        nanopub
       end
 
       def self.parse_statement(nanopub)
@@ -56,12 +56,12 @@ module BEL
         @citation = citation
       end
 
-      def summary_text
-        (@summary_text ||= SummaryText.new)
+      def support
+        (@support ||= Support.new)
       end
 
-      def summary_text=(summary_text)
-        @summary_text = summary_text
+      def support=(support)
+        @support = support
       end
 
       def experiment_context
@@ -93,7 +93,7 @@ module BEL
           {
             :bel_statement      => bel_statement,
             :citation           => citation.to_h,
-            :summary_text       => summary_text.value,
+            :support            => support.value,
             :experiment_context => experiment_context.values,
             :references         => references.to_h,
             :metadata           => metadata.to_a

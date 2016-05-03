@@ -2,7 +2,7 @@ require 'forwardable'
 
 module BEL
   module Nanopub
-    class SummaryText
+    class Support
       extend Forwardable
 
       attr_accessor :value

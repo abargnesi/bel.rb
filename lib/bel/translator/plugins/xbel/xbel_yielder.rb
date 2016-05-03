@@ -177,10 +177,10 @@ module BEL::Translator::Plugins
           el_ag.add_element(self.citation(nanopub.citation))
         end
 
-        # XBEL nanopub (::BEL::Nanopub::SummaryText)
-        if nanopub.summary_text && nanopub.summary_text.value
+        # XBEL nanopub (::BEL::Nanopub::Support)
+        if nanopub.support && nanopub.support.value
           xbel_nanopub      = REXML::Element.new('bel:nanopub')
-          xbel_nanopub.text = nanopub.summary_text.value
+          xbel_nanopub.text = nanopub.support.value
           el_ag.add_element(xbel_nanopub)
         end
 

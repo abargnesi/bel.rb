@@ -56,24 +56,24 @@ module BELRDF
       #         representing the described nanopub
       # @param  [::RDF::Graph] graph the RDF graph to query
       # @return [Nanopub]   the nanopub
-      def make_nanopub(nanopub, graph)
-        statement     = describe(nanopub[BELV.hasStatement], graph)
+      def make_nanopub(nanopub_hash, graph)
+        statement     = describe(nanopub_hash[BELV.hasStatement], graph)
 
         # values
         bel_statement = statement[::RDF::RDFS.label].value
-        ev_text       = nanopub[BELV.hasSupport]
-        citation      = nanopub[BELV.hasCitation]
+        support_text  = nanopub_hash[BELV.hasSupport]
+        citation      = nanopub_hash[BELV.hasCitation]
 
         # model
-        ev_model               = Nanopub.new
-        ev_model.bel_statement = ::BEL::Script.parse(bel_statement)
+        nanopub               = Nanopub.new
+        nanopub.bel_statement = ::BEL::Script.parse(bel_statement)
                                    .find { |obj|
                                      obj.is_a? Statement
                                    }
-        ev_model.summary_text  = SummaryText.new(ev_text.value) if ev_text
+        nanopub.support       = Support.new(support_text.value) if support_text
 
         if citation.respond_to?(:value)
-          ev_model.citation =
+          nanopub.citation =
             case citation.value
             when /pubmed:(\d+)$/
               pubmed_id = $1.to_i
@@ -87,7 +87,7 @@ module BELRDF
             end
         end
 
-        ev_model
+        nanopub
       end
     end
 

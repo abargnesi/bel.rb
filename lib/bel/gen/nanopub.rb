@@ -34,7 +34,7 @@ module BEL
 
         nanopub.bel_statement      = bel_statement
         nanopub.citation           = citation
-        nanopub.summary_text       = BEL::Nanopub::SummaryText.new(
+        nanopub.support            = BEL::Nanopub::Support.new(
           Rantly { sized(120) {string(:alpha)} }
         )
         nanopub.experiment_context = BEL::Nanopub::ExperimentContext.new(

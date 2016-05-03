@@ -72,7 +72,7 @@ module BEL::Translator::Plugins
           NANOPUB_ROOT => {
             :bel_statement      => hash[:bel_statement].to_s,
             :citation           => hash[:citation],
-            :summary_text       => escape_newlines(hash[:summary_text]),
+            :support            => escape_newlines(hash[:support]),
             :experiment_context => hash[:experiment_context],
             :references         => hash[:references],
             :metadata           => hash[:metadata].to_a

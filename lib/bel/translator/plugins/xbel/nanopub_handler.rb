@@ -333,7 +333,7 @@ module BEL::Translator::Plugins
           nanopub_copy = Nanopub.create({
             :bel_statement      => stmt,
             :citation           => @nanopub.citation.to_h,
-            :summary_text       => @nanopub.summary_text.value,
+            :support            => @nanopub.support.value,
             :experiment_context => @nanopub.experiment_context.values.dup,
             :references         => @nanopub.references.values.dup,
             :metadata           => @nanopub.metadata.values.dup
@@ -348,7 +348,7 @@ module BEL::Translator::Plugins
           #   - preserve @nanopub.metadata.document_header
           @nanopub.bel_statement      = nil
           @nanopub.citation           = nil
-          @nanopub.summary_text       = nil
+          @nanopub.support            = nil
           @nanopub.experiment_context = nil
           @nanopub.metadata.delete_if { |key|
             key != :document_header
@@ -411,7 +411,7 @@ module BEL::Translator::Plugins
 
       def end_nanopub
         if @element_stack[-3] == :statement
-          @nanopub.summary_text.value = @text
+          @nanopub.support.value = @text
         end
 
         @element_stack.pop
