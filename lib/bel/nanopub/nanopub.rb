@@ -31,7 +31,7 @@ module BEL
               sym          = keyword.to_sym
               [
                 sym,
-                ::BEL::Namespace::NamespaceDefinition.new(sym, uri, uri)
+                ::BEL::Namespace::NamespaceDefinition.new(sym, uri, nil)
               ]
             }
           ]

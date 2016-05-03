@@ -250,6 +250,10 @@ module BEL
         @values = nil
       end
 
+      def rdf_uri
+        @rdf_uri ||= DEFAULT_URI
+      end
+
       def values
         unless @values
           reload(@url)

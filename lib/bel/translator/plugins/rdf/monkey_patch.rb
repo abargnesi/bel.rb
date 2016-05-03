@@ -9,12 +9,11 @@ module BELRDF
   class ::BEL::Namespace::NamespaceDefinition
 
     def to_uri
-      @rdf_uri
+      rdf_uri
     end
 
     def to_rdf_vocabulary
-      uri = @rdf_uri
-      uri << '/' unless uri.end_with?('/')
+      uri = rdf_uri
       ::RDF::Vocabulary.new(uri)
     end
   end
