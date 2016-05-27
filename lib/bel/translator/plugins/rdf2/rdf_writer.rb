@@ -32,7 +32,7 @@ module BEL
             # TODO Write VoID dataset for document.
           end
 
-          @writer << @nanopub_converter.nanopub(nanopub)
+          @writer << @nanopub_converter.convert(nanopub)
 
           # @nanopub_converter.nanopub(nanopub).each do |statement|
           #   @writer.write_statement(statement)

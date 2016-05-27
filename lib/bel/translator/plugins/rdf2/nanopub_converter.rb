@@ -1,16 +1,17 @@
-require_relative 'nanopub_conversion'
 require_relative 'uuid'
 
 module BEL
   module BELRDF
     class NanopubConverter
-      include NanopubConversion
-
       def initialize(statement_converter)
         @statement_converter = statement_converter
       end
 
-      def nanopub(nanopub)
+      # Convert a {BEL::Nanopub::Nanopub} to {RDF::Graph} of RDF statements.
+      #
+      # @param  [BEL::Nanopub::Nanopub] nanopub
+      # @return [RDF::Graph] graph of RDF statements representing the nanopub
+      def convert(nanopub)
         resource = generate_nanopub_uri
         graph    = RDF::Graph.new(resource)
 
@@ -27,7 +28,7 @@ module BEL
       protected
 
       def bel_statement(statement, nr, ng)
-        ng << @statement_converter.bel_statement(statement)
+        ng << @statement_converter.convert(statement)
       end
 
       def citation(citation, nr, ng)
