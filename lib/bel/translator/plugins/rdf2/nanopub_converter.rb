@@ -27,7 +27,7 @@ module BEL
       protected
 
       def bel_statement(statement, nr, ng)
-        ng << @statement_converter.statement(statement)
+        ng << @statement_converter.bel_statement(statement)
       end
 
       def citation(citation, nr, ng)
@@ -70,7 +70,7 @@ module BEL
 
       # @api private
       def generate_nanopub_uri
-        BELN[generate_uuid]
+        BELN[BELRDF.generate_uuid]
       end
     end
   end

@@ -1,5 +1,3 @@
-require_relative 'schema'
-
 module BEL
   module BELRDF
     module NanopubConversion
