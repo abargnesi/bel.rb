@@ -38,15 +38,12 @@ module BEL
               tg << s(term_uri, BELV2_0.hasConcept, param_uri)
             end
           when BELParser::Expression::Model::Term
-
             if FUNCTION_HASH.key?(arg.function)
               path_part, iterm_uri, itermg = convert(arg)
               tg << itermg
               tg << s(term_uri, BELV2_0.hasChild, iterm_uri)
-            else
-              specialg =
-                handle_special_inner(term, term_uri, arg, tg)
             end
+            handle_special_inner(term, term_uri, arg, tg)
           end
         end
 
@@ -58,6 +55,8 @@ module BEL
       def handle_special_inner(outer_term, outer_uri, inner_term, tg)
         inner_function = inner_term.function
         case
+        when inner_function.return_type.subtype_of?(BELParser::Language::Version2_0::ReturnTypes::Abundance)
+          handle_activity_abundance(outer_term, outer_uri, inner_term, tg)
         when inner_function == Fragment
           handle_fragment(outer_term, outer_uri, inner_term, tg)
         when inner_function == FromLocation
@@ -65,12 +64,20 @@ module BEL
         when inner_function == Location
           handle_location(outer_term, outer_uri, inner_term, tg)
         when inner_function == MolecularActivity
+          handle_molecular_activity(outer_term, outer_uri, inner_term, tg)
         when inner_function == Products
         when inner_function == ProteinModification
         when inner_function == Reactants
         when inner_function == ToLocation
           handle_to_location(outer_term, outer_uri, inner_term, tg)
         when inner_function == Variant
+        end
+      end
+
+      def handle_activity_abundance(outer_term, outer_uri, inner_term, tg)
+        if outer_term.function == Activity
+          _, inner_uri, _ = convert(inner_term)
+          tg << s(outer_uri, BELV2_0.hasActivityAbundance, inner_uri)
         end
       end
 
@@ -92,8 +99,10 @@ module BEL
           location = inner_term.arguments[0]
           if location.is_a?(BELParser::Expression::Model::Parameter)
             param_uri, paramg = @parameter_converter.convert(location)
-            tg << paramg
-            tg << s(outer_uri, BELV2_0.hasLocation, param_uri)
+            if param_uri
+              tg << paramg
+              tg << s(outer_uri, BELV2_0.hasLocation, param_uri)
+            end
           end
         end
       end
@@ -103,8 +112,10 @@ module BEL
           location = inner_term.arguments[0]
           if location.is_a?(BELParser::Expression::Model::Parameter)
             param_uri, paramg = @parameter_converter.convert(location)
-            tg << paramg
-            tg << s(outer_uri, BELV2_0.hasFromLocation, param_uri)
+            if param_uri
+              tg << paramg
+              tg << s(outer_uri, BELV2_0.hasFromLocation, param_uri)
+            end
           end
         end
       end
@@ -114,8 +125,23 @@ module BEL
           location = inner_term.arguments[0]
           if location.is_a?(BELParser::Expression::Model::Parameter)
             param_uri, paramg = @parameter_converter.convert(location)
-            tg << paramg
-            tg << s(outer_uri, BELV2_0.hasToLocation, param_uri)
+            if param_uri
+              tg << paramg
+              tg << s(outer_uri, BELV2_0.hasToLocation, param_uri)
+            end
+          end
+        end
+      end
+
+      def handle_molecular_activity(outer_term, outer_uri, inner_term, tg)
+        if outer_term.function == Activity
+          ma, _ = inner_term.arguments
+          if ma.is_a?(BELParser::Expression::Model::Parameter)
+            param_uri, paramg = @parameter_converter.convert(ma)
+            if param_uri
+              tg << paramg
+              tg << s(outer_uri, BELV2_0.hasActivityType, param_uri)
+            end
           end
         end
       end
