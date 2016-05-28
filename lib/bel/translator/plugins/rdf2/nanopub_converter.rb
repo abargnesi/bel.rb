@@ -34,6 +34,7 @@ module BEL
       def bel_statement(statement, nr, ng)
         path_part, sg = @statement_converter.convert(statement)
         ng << sg
+        ng << s(nr, BELV2_0.hasStatement, sg.graph_name)
       end
 
       def citation(citation, nr, ng)
