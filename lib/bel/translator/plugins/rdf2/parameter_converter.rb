@@ -20,17 +20,16 @@ module BEL
         return nil unless namespace_vocab
 
         value_s       = parameter.value.to_s
-        value_uri     = namespace_vocab[value_s]
+        param_uri     = namespace_vocab[value_s]
         pg            = RDF::Graph.new
-        pg.graph_name = namespace_vocab[value_s]
         if parameter.encoding
           parameter.encoding.each do |enc|
             concept_type = @encoding_hash[enc]
             next unless concept_type
-            pg << s(value_uri, RDF.type, concept_type)
+            pg << s(param_uri, RDF.type, concept_type)
           end
         end
-        pg
+        [param_uri, pg]
       end
 
       @encoding_hash = {

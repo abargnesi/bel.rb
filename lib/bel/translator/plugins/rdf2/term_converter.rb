@@ -22,7 +22,8 @@ module BEL
         path_part     = to_path_part(term)
         term_uri      = to_uri(path_part)
         tg            = RDF::Graph.new
-        tg.graph_name = term_uri
+        tg           << s(term_uri, RDF.type, BELV2_0.Term)
+
         term_class = FUNCTION_HASH[term.function]
         if term_class
           tg << s(term_uri, RDF.type, term_class)
@@ -31,19 +32,19 @@ module BEL
         term.arguments.each do |arg|
           case arg
           when BELParser::Expression::Model::Parameter
-            arg_param = @parameter_converter.convert(arg)
-            if arg_param
-              tg << arg_param
-              tg << s(term_uri, BELV2_0.hasConcept, arg_param.graph_name)
+            param_uri, paramg = @parameter_converter.convert(arg)
+            if param_uri
+              tg << paramg
+              tg << s(term_uri, BELV2_0.hasConcept, param_uri)
             end
           when BELParser::Expression::Model::Term
-            path_part, arg_term = convert(arg)
-            tg << arg_term
-            tg << s(term_uri, BELV2_0.hasChild, arg_term.graph_name)
+            path_part, iterm_uri, itermg = convert(arg)
+            tg << itermg
+            tg << s(term_uri, BELV2_0.hasChild, iterm_uri)
           end
         end
 
-        [path_part, tg]
+        [path_part, term_uri, tg]
       end
 
       private

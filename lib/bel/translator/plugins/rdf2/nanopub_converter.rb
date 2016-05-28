@@ -17,7 +17,7 @@ module BEL
       def convert(nanopub)
         resource         = generate_nanopub_uri
         graph            = RDF::Graph.new
-        graph.graph_name = resource
+        graph           << s(resource, RDF.type, BELV2_0.Nanopub)
 
         bel_statement(nanopub.bel_statement, resource, graph)
         citation(nanopub.citation, resource, graph)
@@ -32,9 +32,9 @@ module BEL
       protected
 
       def bel_statement(statement, nr, ng)
-        path_part, sg = @statement_converter.convert(statement)
+        path_part, stmt_uri, sg = @statement_converter.convert(statement)
         ng << sg
-        ng << s(nr, BELV2_0.hasStatement, sg.graph_name)
+        ng << s(nr, BELV2_0.hasStatement, stmt_uri)
       end
 
       def citation(citation, nr, ng)

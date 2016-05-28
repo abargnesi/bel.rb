@@ -17,46 +17,44 @@ module BEL
       # @return [RDF::Graph] graph of RDF statements representing the statement
       def convert(bel_statement)
         # Dive into subject
-        sub_part, subg = @term_converter.convert(bel_statement.subject)
+        sub_part, sub_uri, subg = @term_converter.convert(bel_statement.subject)
 
         # Dive into object
         case
         when bel_statement.simple?
-          obj_part, objg = @term_converter.convert(bel_statement.object)
-          rel_part       = nil
-          obj_uri        = objg.graph_name
-          path_part      = "#{sub_part}_#{rel_part}_#{obj_part}"
-          stmt_uri       = BELR[URI::encode(path_part)]
+          obj_part, obj_uri, objg = @term_converter.convert(bel_statement.object)
+          rel_part                = nil
+          path_part               = "#{sub_part}_#{rel_part}_#{obj_part}"
+          stmt_uri                = BELR[URI::encode(path_part)]
 
-          sg            = RDF::Graph.new
-          sg.graph_name = stmt_uri
+          sg  = RDF::Graph.new
           sg << subg
           sg << objg
-          sg << s(stmt_uri, BELV2_0.hasSubject, subg.graph_name)
-          sg << s(stmt_uri, BELV2_0.hasObject,  objg.graph_name)
+          sg << s(stmt_uri, RDF.type,           BELV2_0.Statement)
+          sg << s(stmt_uri, BELV2_0.hasSubject, sub_uri)
+          sg << s(stmt_uri, BELV2_0.hasObject,  obj_uri)
         when bel_statement.nested?
-          obj_part, objg = convert(bel_statement.object)
-          rel_part       = nil
-          obj_uri        = objg.graph_name
-          path_part      = "#{sub_part}_#{rel_part}_#{obj_part}"
-          stmt_uri       = BELR[URI::encode(path_part)]
+          obj_part, obj_uri, objg = convert(bel_statement.object)
+          rel_part                = nil
+          path_part               = "#{sub_part}_#{rel_part}_#{obj_part}"
+          stmt_uri                = BELR[URI::encode(path_part)]
 
           sg            = RDF::Graph.new
-          sg.graph_name = stmt_uri
           sg << subg
           sg << objg
-          sg << s(stmt_uri, BELV2_0.hasSubject, subg.graph_name)
-          sg << s(stmt_uri, BELV2_0.hasObject,  objg.graph_name)
+          sg << s(stmt_uri, RDF.type,           BELV2_0.Statement)
+          sg << s(stmt_uri, BELV2_0.hasSubject, sub_uri)
+          sg << s(stmt_uri, BELV2_0.hasObject,  obj_uri)
         else
           path_part      = sub_part
           stmt_uri       = BELR[URI::encode(path_part)]
 
-          sg            = RDF::Graph.new
-          sg.graph_name = stmt_uri
-          sg << s(stmt_uri, BELV2_0.hasSubject, subg.graph_name)
+          sg  = RDF::Graph.new
+          sg << s(stmt_uri, RDF.type,           BELV2_0.Statement)
+          sg << s(stmt_uri, BELV2_0.hasSubject, sub_uri)
         end
 
-        [path_part, sg]
+        [path_part, stmt_uri, sg]
       end
     end
   end
