@@ -45,7 +45,9 @@ module BEL
       end
 
       def support(support, nr, ng)
-        ng << s(nr, BELV2_0.hasSupport, support.to_s)
+        unless support.value.nil?
+          ng << s(nr, BELV2_0.hasSupport, support.to_s)
+        end
       end
 
       def experiment_context(experiment_context, nr, ng)
