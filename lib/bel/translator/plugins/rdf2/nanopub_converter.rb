@@ -1,8 +1,11 @@
 require_relative 'uuid'
+require_relative 'rdf_converter'
 
 module BEL
   module BELRDF
     class NanopubConverter
+      include RDFConverter
+
       def initialize(statement_converter)
         @statement_converter = statement_converter
       end
@@ -12,8 +15,9 @@ module BEL
       # @param  [BEL::Nanopub::Nanopub] nanopub
       # @return [RDF::Graph] graph of RDF statements representing the nanopub
       def convert(nanopub)
-        resource = generate_nanopub_uri
-        graph    = RDF::Graph.new(resource)
+        resource         = generate_nanopub_uri
+        graph            = RDF::Graph.new
+        graph.graph_name = resource
 
         bel_statement(nanopub.bel_statement, resource, graph)
         citation(nanopub.citation, resource, graph)
@@ -28,7 +32,8 @@ module BEL
       protected
 
       def bel_statement(statement, nr, ng)
-        ng << @statement_converter.convert(statement)
+        path_part, sg = @statement_converter.convert(statement)
+        ng << sg
       end
 
       def citation(citation, nr, ng)
@@ -61,10 +66,6 @@ module BEL
         ng << s(bel, RDF.type, BELV2_0.BiologicalExpressionLanguage)
         ng << s(bel, BELV2_0.hasVersion, spec.version.to_s)
         ng << s(nr, BELV2_0.hasBiologicalExpressionLanguage, bel)
-      end
-
-      def s(subject, predicate, object)
-        RDF::Statement.new(subject, predicate, object)
       end
 
       private

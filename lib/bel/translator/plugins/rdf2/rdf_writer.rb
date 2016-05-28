@@ -1,5 +1,8 @@
-require_relative 'statement_converter'
 require_relative 'nanopub_converter'
+require_relative 'statement_converter'
+require_relative 'term_converter'
+require_relative 'parameter_converter'
+require_relative 'namespace_converter'
 
 module BEL
   module BELRDF
@@ -24,7 +27,12 @@ module BEL
 
           @writer.write_prologue
           @wrote_dataset = false
-          @nanopub_converter = NanopubConverter.new(StatementConverter.new)
+          @nanopub_converter =
+            NanopubConverter.new(
+              StatementConverter.new(
+                TermConverter.new(
+                  ParameterConverter.new(
+                    NamespaceConverter.new))))
         end
 
         def <<(nanopub)

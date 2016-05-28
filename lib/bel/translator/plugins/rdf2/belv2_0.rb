@@ -7,6 +7,7 @@ module BEL
 
     # Vocabulary constant for Nanopub instances (non-strict).
     BELN   = RDF::Vocabulary.new('http://www.openbel.org/nanopub/')
+    BELR   = RDF::Vocabulary.new('http://www.openbel.org/bel/')
     PUBMED = RDF::Vocabulary.new('http://bio2rdf.org/pubmed:')
 
     class BELV2_0 < RDF::StrictVocabulary('http://www.openbel.org/vocabulary/')
