@@ -63,6 +63,7 @@ module BEL
         when inner_function == FromLocation
           handle_from_location(outer_term, outer_uri, inner_term, tg)
         when inner_function == Location
+          handle_location(outer_term, outer_uri, inner_term, tg)
         when inner_function == MolecularActivity
         when inner_function == Products
         when inner_function == ProteinModification
@@ -81,6 +82,18 @@ module BEL
           end
           if frag_desc.is_a?(BELParser::Expression::Model::Parameter)
             tg << s(outer_uri, BELV2_0.hasFragmentDescriptor, frag_desc.to_s)
+          end
+        end
+      end
+
+      def handle_location(outer_term, outer_uri, inner_term, tg)
+        match = LOCATION_ABUNDANCES.any? { |f| outer_term.function == f}
+        if match
+          location = inner_term.arguments[0]
+          if location.is_a?(BELParser::Expression::Model::Parameter)
+            param_uri, paramg = @parameter_converter.convert(location)
+            tg << paramg
+            tg << s(outer_uri, BELV2_0.hasLocation, param_uri)
           end
         end
       end
@@ -138,6 +151,14 @@ module BEL
         RNAAbundance => BELV2_0.RNAAbundance,
         Translocation => BELV2_0.Translocation
       }.freeze
+
+      LOCATION_ABUNDANCES = [
+        ComplexAbundance,
+        GeneAbundance,
+        MicroRNAAbundance,
+        ProteinAbundance,
+        RNAAbundance
+      ]
     end
   end
 end
