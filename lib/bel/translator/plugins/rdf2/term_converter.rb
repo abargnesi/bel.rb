@@ -60,18 +60,16 @@ module BEL
         case
         when inner_function == Fragment
           handle_fragment(outer_term, outer_uri, inner_term, tg)
+        when inner_function == FromLocation
+          handle_from_location(outer_term, outer_uri, inner_term, tg)
+        when inner_function == Location
+        when inner_function == MolecularActivity
+        when inner_function == Products
+        when inner_function == ProteinModification
+        when inner_function == Reactants
+        when inner_function == ToLocation
+        when inner_function == Variant
         end
-        # when Fragment
-        # when FromLocation
-        # #when List
-        # when Location
-        # when MolecularActivity
-        # when Products
-        # when ProteinModification
-        # when Reactants
-        # when ToLocation
-        # when Variant
-        # end
       end
 
       def handle_fragment(outer_term, outer_uri, inner_term, tg)
@@ -82,6 +80,17 @@ module BEL
           end
           if frag_desc.is_a?(BELParser::Expression::Model::Parameter)
             tg << s(outer_uri, BELV2_0.hasFragmentDescriptor, frag_desc.to_s)
+          end
+        end
+      end
+
+      def handle_from_location(outer_term, outer_uri, inner_term, tg)
+        if outer_term.function == Translocation
+          location = inner_term.arguments[0]
+          if location.is_a?(BELParser::Expression::Model::Parameter)
+            param_uri, paramg = @parameter_converter.convert(location)
+            tg << paramg
+            tg << s(outer_uri, BELV2_0.hasFromLocation, param_uri)
           end
         end
       end
