@@ -56,27 +56,34 @@ module BEL
       private
 
       def handle_special_inner(outer_term, outer_uri, inner_term, tg)
-        case inner_term.function
-        when Fragment
-          if outer_term.function.is_a?(ProteinAbundance)
-            frag_range, frag_desc = inner_term.arguments
-            if frag_range.is_a?(BELParser::Expression::Model::Parameter)
-              tg << s(outer_uri, BELV2_0.hasFragmentRange, frag_range.to_s)
-            end
-            if frag_desc.is_a?(BELParser::Expression::Model::Parameter)
-              tg << s(outer_uri, BELV2_0.hasFragmentDescriptor, frag_desc.to_s)
-            end
-          end
-        when FromLocation
-        #when List
-        when Location
-        when MolecularActivity
-        when Products
-        when ProteinModification
+        inner_function = inner_term.function
+        case
+        when inner_function == Fragment
+          handle_fragment(outer_term, outer_uri, inner_term, tg)
         end
+        # when Fragment
+        # when FromLocation
+        # #when List
+        # when Location
+        # when MolecularActivity
+        # when Products
+        # when ProteinModification
+        # when Reactants
+        # when ToLocation
+        # when Variant
+        # end
       end
 
-      def handle_fragment()
+      def handle_fragment(outer_term, outer_uri, inner_term, tg)
+        if outer_term.function == ProteinAbundance
+          frag_range, frag_desc = inner_term.arguments
+          if frag_range.is_a?(BELParser::Expression::Model::Parameter)
+            tg << s(outer_uri, BELV2_0.hasFragmentRange, frag_range.to_s)
+          end
+          if frag_desc.is_a?(BELParser::Expression::Model::Parameter)
+            tg << s(outer_uri, BELV2_0.hasFragmentDescriptor, frag_desc.to_s)
+          end
+        end
       end
 
       def to_path_part(term)
@@ -106,13 +113,9 @@ module BEL
         MicroRNAAbundance => BELV2_0.MicroRNAAbundance,
         Pathology => BELV2_0.Pathology,
         ProteinAbundance => BELV2_0.ProteinAbundance,
-        #ProteinModification => # TODO Special, consider Protein and ProteinModification.
-        #Reactants => # TODO Special
         Reaction => BELV2_0.Reaction,
         RNAAbundance => BELV2_0.RNAAbundance,
-        #ToLocation => # TODO Special
-        Translocation => BELV2_0.Translocation,
-        #Variant => # TODO Special
+        Translocation => BELV2_0.Translocation
       }.freeze
     end
   end
