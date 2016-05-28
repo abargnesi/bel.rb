@@ -25,7 +25,7 @@ belv:ProteinConcept rdfs:subClassOf belv:AbundanceConcept .
 
 # Base Classes
 belv:Abundance rdf:type rdfs:Class .
-belv:Evidence rdf:type rdfs:Class .
+belv:Nanopub rdf:type rdfs:Class .
 belv:Relationship rdf:type rdfs:Class .
 belv:Statement rdf:type rdfs:Class .
 belv:Term rdf:type rdfs:Class .
@@ -125,22 +125,22 @@ belv:ProteinModificationConcept rdfs:subClassOf belv:NamespaceConcept .  # Added
 belv:ModifiedProteinAbundance rdfs:subClassOf belv:ProteinAbundance .
 belv:ProteinModification rdf:type rdfs:Class .
 belv:hasModifiedProteinAbundance rdf:type rdf:Property ;
-  rdfs:domain rdf:ProteinAbundance ;
-  rdfs:range belv:ModifiedProteinAbundance .
+  rdfs:domain belv:ProteinAbundance ;
+  rdfs:range  belv:ModifiedProteinAbundance .
 
 belv:hasProteinModification rdf:type rdf:Property ;
-  rdfs:domain rdf:ModifiedProteinAbundance ;
-  rdfs:range belv:ProteinModification .
+  rdfs:domain belv:ModifiedProteinAbundance ;
+  rdfs:range  belv:ProteinModification .
 
 belv:hasProteinModificationType rdf:type rdf:Property ;
  rdfs:domain belv:ProteinModification ;
- rdfs:range belv:ProteinModificationConcept .
+ rdfs:range  belv:ProteinModificationConcept .
 belv:hasProteinResidue rdf:type rdf:Property ;
-  rdfs:range rdf:Literal ;
+  rdfs:range  rdfs:Literal ;
   rdfs:domain belv:ProteinModification .
 belv:hasSequencePosition rdf:type rdf:Property ;
  rdfs:domain belv:ProteinModification ;
- rdfs:range xsd:integer .
+ rdfs:range  xsd:integer .
 
 
 # Abundance Variants
@@ -149,19 +149,23 @@ belv:hasVariant rdf:type rdf:Property ;  # Added
  rdfs:domain belv:GeneAbundance ;  # Added
  rdfs:domain belv:RNAAbundance ;  # Added
  rdfs:domain belv:MicroRNAAbundance ;  # Added
- rdfs:domain belv:ProteinAbundance .  # Added
+ rdfs:domain belv:ProteinAbundance ;  # Added
+ rdfs:range  xsd:string .  # Added
 belv:hasLocation rdf:type rdf:Property ;  # Added
  rdfs:domain belv:GeneAbundance ;  # Added
  rdfs:domain belv:RNAAbundance ;  # Added
  rdfs:domain belv:ProteinAbundance ;  # Added
  rdfs:domain belv:ComplexAbundance ;  # Added
- rdfs:domain belv:MicroRNAAbundance .  # Added
+ rdfs:domain belv:MicroRNAAbundance ;  # Added
+ rdfs:range  belv:LocationConcept .  # Added
 belv:hasFromLocation rdf:type rdf:Property;  # Added
   rdfs:subPropertyOf belv:hasLocation;  # Added
-  rdfs:domain belv:Translocation .  # Added
+  rdfs:domain belv:Translocation ;  # Added
+  rdfs:range  belv:LocationConcept .  # Added
 belv:hasToLocation rdf:type rdf:Property;  # Added
   rdfs:subPropertyOf belv:hasLocation;  # Added
-  rdfs:domain belv:Translocation .  # Added
+  rdfs:domain belv:Translocation ;  # Added
+  rdfs:range  belv:LocationConcept .  # Added
 
 
 # Properties
@@ -171,11 +175,15 @@ belv:hasChild rdf:type rdf:Property ;
 belv:hasConcept rdf:type rdf:Property ;
  rdfs:range belv:NamespaceConcept ;
  rdfs:domain belv:Term .
-belv:hasFragment rdf:type rdf:Property ;  # Added
- rdfs:domain belv:ProteinAbundance .  # Added
+belv:hasFragmentRange rdf:type rdf:Property ;  # Added
+ rdfs:domain belv:ProteinAbundance ;  # Added
+ rdfs:range  xsd:string .  # Added
+belv:hasFragmentDescriptor rdf:type rdf:Property ;  # Added
+ rdfs:domain belv:ProteinAbundance ;  # Added
+ rdfs:range  xsd:string .  # Added
 
-belv:hasEvidence rdf:type rdf:Property ;
- rdfs:range belv:Evidence ;
+belv:hasNanopub rdf:type rdf:Property ;
+ rdfs:range belv:Nanopub ;
  rdfs:domain belv:Statement .
 belv:hasObject rdfs:subPropertyOf belv:hasChild ;
  rdfs:range belv:Term ;
@@ -188,11 +196,19 @@ belv:hasSubject rdfs:subPropertyOf belv:hasChild ;
  rdfs:domain belv:Statement .
 belv:hasAnnotation rdf:type rdf:Property ;
  rdfs:range belv:AnnotationConcept ;
- rdfs:domain belv:Evidence .
+ rdfs:domain belv:Nanopub .
 belv:hasCitation rdf:type rdf:Property ;
- rdfs:domain belv:Evidence .
-belv:hasEvidenceText rdfs:range xsd:string ;
- rdfs:domain belv:Evidence .
+ rdfs:domain belv:Nanopub ;
+ rdfs:range  rdfs:Resource .
+belv:hasSupport rdf:type rdf:Property ;
+ rdfs:domain belv:Nanopub ;
+ rdfs:range  xsd:string .
 belv:hasStatement rdf:type rdf:Property ;
  rdfs:range belv:Statement ;
- rdfs:domain belv:Evidence .
+ rdfs:domain belv:Nanopub .
+belv:hasProduct rdf:type rdf:Property ;
+ rdfs:range belv:Abundance ;
+ rdfs:domain belv:Reaction .
+belv:hasReactant rdf:type rdf:Property ;
+ rdfs:range belv:Abundance ;
+ rdfs:domain belv:Reaction .
