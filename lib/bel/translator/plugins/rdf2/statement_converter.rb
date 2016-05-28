@@ -53,6 +53,7 @@ module BEL
           stmt_uri       = BELR[URI::encode(path_part)]
 
           sg  = RDF::Graph.new
+          sg << subg
           sg << s(stmt_uri, RDF.type,           BELV2_0.Statement)
           sg << s(stmt_uri, BELV2_0.hasSubject, sub_uri)
         end

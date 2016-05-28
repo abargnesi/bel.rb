@@ -38,9 +38,15 @@ module BEL
               tg << s(term_uri, BELV2_0.hasConcept, param_uri)
             end
           when BELParser::Expression::Model::Term
-            path_part, iterm_uri, itermg = convert(arg)
-            tg << itermg
-            tg << s(term_uri, BELV2_0.hasChild, iterm_uri)
+
+            if FUNCTION_HASH.key?(arg.function)
+              path_part, iterm_uri, itermg = convert(arg)
+              tg << itermg
+              tg << s(term_uri, BELV2_0.hasChild, iterm_uri)
+            else
+              specialg =
+                handle_special_inner(term, term_uri, arg, tg)
+            end
           end
         end
 
@@ -48,6 +54,30 @@ module BEL
       end
 
       private
+
+      def handle_special_inner(outer_term, outer_uri, inner_term, tg)
+        case inner_term.function
+        when Fragment
+          if outer_term.function.is_a?(ProteinAbundance)
+            frag_range, frag_desc = inner_term.arguments
+            if frag_range.is_a?(BELParser::Expression::Model::Parameter)
+              tg << s(outer_uri, BELV2_0.hasFragmentRange, frag_range.to_s)
+            end
+            if frag_desc.is_a?(BELParser::Expression::Model::Parameter)
+              tg << s(outer_uri, BELV2_0.hasFragmentDescriptor, frag_desc.to_s)
+            end
+          end
+        when FromLocation
+        #when List
+        when Location
+        when MolecularActivity
+        when Products
+        when ProteinModification
+        end
+      end
+
+      def handle_fragment()
+      end
 
       def to_path_part(term)
         return '' if term.nil?
@@ -71,16 +101,10 @@ module BEL
         ComplexAbundance => BELV2_0.ComplexAbundance,
         CompositeAbundance => BELV2_0.CompositeAbundance,
         Degradation => BELV2_0.Degradation,
-        #Fragment => # TODO Special
-        #FromLocation => # TODO Special
         Fusion => BELV2_0.FusionAbundance,
         GeneAbundance => BELV2_0.GeneAbundance,
-        #List => # TODO Ignore or expand.
-        #Location => # TODO Special
         MicroRNAAbundance => BELV2_0.MicroRNAAbundance,
-        #MolecularActivity => # TODO Special
         Pathology => BELV2_0.Pathology,
-        #Products => # TODO Special
         ProteinAbundance => BELV2_0.ProteinAbundance,
         #ProteinModification => # TODO Special, consider Protein and ProteinModification.
         #Reactants => # TODO Special

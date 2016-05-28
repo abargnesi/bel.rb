@@ -24,7 +24,7 @@ module BEL
         pg            = RDF::Graph.new
         if parameter.encoding
           parameter.encoding.each do |enc|
-            concept_type = @encoding_hash[enc]
+            concept_type = ENCODING_HASH[enc]
             next unless concept_type
             pg << s(param_uri, RDF.type, concept_type)
           end
@@ -32,7 +32,7 @@ module BEL
         [param_uri, pg]
       end
 
-      @encoding_hash = {
+      ENCODING_HASH = {
         :A => BELV2_0.AbundanceConcept,
         :B => BELV2_0.BiologicalProcessConcept,
         :C => BELV2_0.ComplexConcept,
