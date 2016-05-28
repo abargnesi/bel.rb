@@ -1,5 +1,6 @@
 require_relative 'nanopub_converter'
 require_relative 'statement_converter'
+require_relative 'relationship_converter'
 require_relative 'term_converter'
 require_relative 'parameter_converter'
 require_relative 'namespace_converter'
@@ -32,7 +33,8 @@ module BEL
               StatementConverter.new(
                 TermConverter.new(
                   ParameterConverter.new(
-                    NamespaceConverter.new))))
+                    NamespaceConverter.new)),
+                RelationshipConverter.new))
         end
 
         def <<(nanopub)
