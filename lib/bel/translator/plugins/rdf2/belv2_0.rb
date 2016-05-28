@@ -291,11 +291,11 @@ module BEL
         RDF.type           => RDF.Property,
         RDFS.domain        => BELV2_0.ProteinModification,
         RDFS.range         => BELV2_0.ProteinModificationConcept
-      property :hasProteinResidue,
+      property :hasAminoAcid,
         RDF.type           => RDF.Property,
-        RDFS.domain        => RDFS.Literal,
-        RDFS.range         => BELV2_0.ProteinModification
-      property :hasSequencePosition,
+        RDFS.domain        => BELV2_0.ProteinModification,
+        RDFS.range         => XSD.string
+      property :hasProteinResidue,
         RDF.type           => RDF.Property,
         RDFS.domain        => BELV2_0.ProteinModification,
         RDFS.range         => XSD.integer

@@ -68,6 +68,7 @@ module BEL
         when inner_function == Products
           handle_products(outer_term, outer_uri, inner_term, tg)
         when inner_function == ProteinModification
+          handle_pmod(outer_term, outer_uri, inner_term, tg)
         when inner_function == Reactants
           handle_reactants(outer_term, outer_uri, inner_term, tg)
         when inner_function == ToLocation
@@ -166,6 +167,33 @@ module BEL
               _, inner_uri, _ = convert(arg)
               tg << s(outer_uri, BELV2_0.hasReactant, inner_uri)
             end
+          end
+        end
+      end
+
+      def handle_pmod(outer_term, outer_uri, inner_term, tg)
+        if outer_term.function == ProteinAbundance
+          tg << s(outer_uri, RDF.type, BELV2_0.ModifiedProteinAbundance)
+          tg << s(outer_uri, BELV2_0.hasModifiedProteinAbundance, outer_uri)
+
+          mod_protein_uri = BELR[URI::encode(to_path_part(inner_term))]
+          tg << s(outer_uri, BELV2_0.hasProteinModification, mod_protein_uri)
+
+          modtype, amino_acid, residue = inner_term.arguments
+          if modtype && modtype.is_a?(BELParser::Expression::Model::Parameter)
+            param_uri, paramg = @parameter_converter.convert(modtype)
+            if param_uri
+              tg << paramg
+              tg << s(mod_protein_uri, BELV2_0.hasProteinModificationType, param_uri)
+            end
+          end
+
+          if amino_acid && amino_acid.is_a?(BELParser::Expression::Model::Parameter)
+            tg << s(mod_protein_uri, BELV2_0.hasAminoAcid, amino_acid.to_s)
+          end
+
+          if residue && residue.is_a?(BELParser::Expression::Model::Parameter)
+            tg << s(mod_protein_uri, BELV2_0.hasProteinResidue, residue.to_s.to_i)
           end
         end
       end
