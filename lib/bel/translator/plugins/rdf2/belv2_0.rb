@@ -300,6 +300,17 @@ module BEL
         RDFS.domain        => BELV2_0.ProteinModification,
         RDFS.range         => XSD.integer
 
+      # Reaction properties
+      property :hasProduct,
+        RDF.type           => RDF.Property,
+        RDFS.domain        => BELV2_0.Reaction,
+        RDFS.range         => BELV2_0.Abundance
+      property :hasReactant,
+        RDF.type           => RDF.Property,
+        RDFS.domain        => BELV2_0.Reaction,
+        RDFS.range         => BELV2_0.Abundance
+
+
       # Variant properties
       property :hasVariant,
         RDF.type           => RDF.Property,

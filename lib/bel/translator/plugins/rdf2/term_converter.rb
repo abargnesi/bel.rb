@@ -66,8 +66,10 @@ module BEL
         when inner_function == MolecularActivity
           handle_molecular_activity(outer_term, outer_uri, inner_term, tg)
         when inner_function == Products
+          handle_products(outer_term, outer_uri, inner_term, tg)
         when inner_function == ProteinModification
         when inner_function == Reactants
+          handle_reactants(outer_term, outer_uri, inner_term, tg)
         when inner_function == ToLocation
           handle_to_location(outer_term, outer_uri, inner_term, tg)
         when inner_function == Variant
@@ -141,6 +143,28 @@ module BEL
             if param_uri
               tg << paramg
               tg << s(outer_uri, BELV2_0.hasActivityType, param_uri)
+            end
+          end
+        end
+      end
+
+      def handle_products(outer_term, outer_uri, inner_term, tg)
+        if outer_term.function == Reaction
+          inner_term.arguments.each do |arg|
+            if arg.is_a?(BELParser::Expression::Model::Term)
+              _, inner_uri, _ = convert(arg)
+              tg << s(outer_uri, BELV2_0.hasProduct, inner_uri)
+            end
+          end
+        end
+      end
+
+      def handle_reactants(outer_term, outer_uri, inner_term, tg)
+        if outer_term.function == Reaction
+          inner_term.arguments.each do |arg|
+            if arg.is_a?(BELParser::Expression::Model::Term)
+              _, inner_uri, _ = convert(arg)
+              tg << s(outer_uri, BELV2_0.hasReactant, inner_uri)
             end
           end
         end
