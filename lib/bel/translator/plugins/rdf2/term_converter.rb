@@ -1,5 +1,6 @@
 require          'rdf'
 require          'bel_parser/language/version2_0'
+require          'bel_parser/quoting'
 require_relative 'belv2_0'
 require_relative 'rdf_converter'
 
@@ -7,6 +8,7 @@ module BEL
   module BELRDF
     class TermConverter
       include BELParser::Language::Version2_0::Functions
+      include BELParser::Quoting
       include RDFConverter
 
       def initialize(parameter_converter)
@@ -74,6 +76,7 @@ module BEL
         when inner_function == ToLocation
           handle_to_location(outer_term, outer_uri, inner_term, tg)
         when inner_function == Variant
+          handle_variant(outer_term, outer_uri, inner_term, tg)
         end
       end
 
@@ -88,10 +91,10 @@ module BEL
         if outer_term.function == ProteinAbundance
           frag_range, frag_desc = inner_term.arguments
           if frag_range.is_a?(BELParser::Expression::Model::Parameter)
-            tg << s(outer_uri, BELV2_0.hasFragmentRange, frag_range.to_s)
+            tg << s(outer_uri, BELV2_0.hasFragmentRange, unquote(frag_range.to_s))
           end
           if frag_desc.is_a?(BELParser::Expression::Model::Parameter)
-            tg << s(outer_uri, BELV2_0.hasFragmentDescriptor, frag_desc.to_s)
+            tg << s(outer_uri, BELV2_0.hasFragmentDescriptor, unquote(frag_desc.to_s))
           end
         end
       end
@@ -189,11 +192,21 @@ module BEL
           end
 
           if amino_acid && amino_acid.is_a?(BELParser::Expression::Model::Parameter)
-            tg << s(mod_protein_uri, BELV2_0.hasAminoAcid, amino_acid.to_s)
+            tg << s(mod_protein_uri, BELV2_0.hasAminoAcid, unquote(amino_acid.to_s))
           end
 
           if residue && residue.is_a?(BELParser::Expression::Model::Parameter)
             tg << s(mod_protein_uri, BELV2_0.hasProteinResidue, residue.to_s.to_i)
+          end
+        end
+      end
+
+      def handle_variant(outer_term, outer_uri, inner_term, tg)
+        match = VARIANT_ABUNDANCES.any? { |f| outer_term.function == f}
+        if match
+          hgvs_descriptor, _ = inner_term.arguments
+          if hgvs_descriptor.is_a?(BELParser::Expression::Model::Parameter)
+            tg << s(outer_uri, BELV2_0.hasVariant, unquote(hgvs_descriptor.to_s))
           end
         end
       end
@@ -232,6 +245,13 @@ module BEL
 
       LOCATION_ABUNDANCES = [
         ComplexAbundance,
+        GeneAbundance,
+        MicroRNAAbundance,
+        ProteinAbundance,
+        RNAAbundance
+      ]
+
+      VARIANT_ABUNDANCES = [
         GeneAbundance,
         MicroRNAAbundance,
         ProteinAbundance,
