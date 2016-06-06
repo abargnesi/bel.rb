@@ -135,7 +135,10 @@ module BEL
         ]
       term :Increases,
         RDF.type           => RDFS.Class,
-        RDFS.subClassOf    => BELV2_0.CausalRelationship
+        RDFS.subClassOf    => [
+          BELV2_0.CausalRelationship,
+          BELV2_0.PositiveRelationship
+        ]
       term :DirectlyIncreases,
         RDF.type           => RDFS.Class,
         RDFS.subClassOf    => [
@@ -177,7 +180,9 @@ module BEL
       term :RateLimitingStepOf,
         RDF.type           => RDFS.Class,
         RDFS.subClassOf    => [
-          BELV2_0.CausalRelationship, BELV2_0.Increases, BELV2_0.SubProcessOf
+          BELV2_0.CausalRelationship,
+          BELV2_0.Increases,
+          BELV2_0.SubProcessOf
         ]
       term :Regulates,
         RDF.type           => RDFS.Class,
