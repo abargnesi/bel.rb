@@ -71,7 +71,7 @@ module BEL::JSON
     end
 
     def hash_start
-      {}
+      @hash = {}
     end
 
     def hash_end
@@ -79,8 +79,8 @@ module BEL::JSON
     end
 
     def hash_set(hash, key, value)
-      hash[key]  = value
-      @hash = hash
+      hash[key] = value
+      @hash     = hash
     end
 
     def array_start
