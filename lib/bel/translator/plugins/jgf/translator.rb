@@ -19,7 +19,7 @@ module BEL::Translator::Plugins
         }
 
         ::BEL::JSON.read(data, options).lazy.select { |obj|
-          obj.include?(:nodes) && obj.include?(:edges)
+          obj.include?(:nodes)
         }.flat_map { |graph|
           unwrap(graph, default_resource_index)
         }
@@ -76,7 +76,7 @@ module BEL::Translator::Plugins
         ids = id_nodes.keys.to_set
 
         # map edges to statements
-        bel_statements = graph[:edges].map { |edge|
+        bel_statements = graph.fetch(:edges, []).map { |edge|
           src, rel, tgt = edge.values_at(:source, :relation, :target)
           source_node = id_nodes[src]
           target_node = id_nodes[tgt]
@@ -108,7 +108,7 @@ module BEL::Translator::Plugins
         # map statements to nanopub objects
         bel_statements.map { |bel_statement|
           graph_name  = graph[:label] || graph[:id] || 'BEL Graph'
-          bel_version = graph[:metadata][:bel_version] || '1.0'
+          bel_version = graph.fetch(:metadata, {})[:bel_version] || '1.0'
           metadata    = ::BEL::Nanopub::Metadata.new
           references  = ::BEL::Nanopub::References.new
 
