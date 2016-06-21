@@ -1,4 +1,6 @@
 require 'open-uri'
+require 'bel_parser/expression/model/annotation'
+require 'bel_parser/expression/model/namespace'
 
 require_relative 'annotation'
 require_relative 'language'
@@ -220,7 +222,7 @@ module BEL
             keyword = BEL::read_lines(url).find { |line|
               line.start_with? 'Keyword'
             }.split('=').map(&:strip)[1].to_sym
-            NamespaceDefinition.new(keyword, url)
+            ::BELParser::Expression::Model::Namespace.new(keyword, nil, url)
           }
         @annotations += data.
           scan(%r{<(idx:)?annotationdefinition (idx:)?resourceLocation="(.*)"}).
@@ -229,7 +231,7 @@ module BEL
             keyword = BEL::read_lines(url).find { |line|
               line.start_with? 'Keyword'
             }.split('=').map(&:strip)[1].to_sym
-            ::BEL::Annotation::AnnotationDefinition.new(keyword, url)
+            ::BELParser::Expression::Model::Annotation.new(keyword, :url, url)
           }
 
         @loaded = true

@@ -1,5 +1,6 @@
 require 'bel'
 require 'bel/json'
+require 'bel_parser/expression/parser'
 
 module BEL::Translator::Plugins
 
@@ -11,8 +12,10 @@ module BEL::Translator::Plugins
       include ::BEL::Namespace
 
       def read(data, options = {})
+        # FIXME Use default resources only if edge nanopubs do not contain
+        # references.
         default_resource_index = options.fetch(:default_resource_index) {
-          ResourceIndex.openbel_published_index('20131211')
+          ResourceIndex.openbel_published_index('20150611')
         }
 
         ::BEL::JSON.read(data, options).lazy.select { |obj|
@@ -85,10 +88,10 @@ module BEL::Translator::Plugins
             ids.delete(target_node)
 
             # semantic default
-            rel  = 'association' unless rel
+            rel = 'association' unless rel
 
-            bel_statement = ::BEL::Script.parse(
-              "#{source_node} #{rel} #{target_node}\n").select { |obj| obj.is_a? BELParser::Expression::Model::Statement }.first
+            BELParser::Expression.parse_statements(
+              "#{source_node} #{rel} #{target_node}\n")
           end
         }.compact
 
@@ -96,67 +99,63 @@ module BEL::Translator::Plugins
         if !ids.empty?
           bel_statements.concat(
             ids.map { |id|
-              ::BEL::Script.parse(
-                "#{id_nodes[id]}\n"
-              ).select { |obj|
-                obj.is_a? BELParser::Expression::Model::Statement
-              }.first
+              BELParser::Expression.parse_statements(
+                "#{id_nodes[id]}\n")
             }
           )
         end
 
         # map statements to nanopub objects
         bel_statements.map { |bel_statement|
-          graph_name = graph[:label] || graph[:id] || 'BEL Graph'
-          metadata   = ::BEL::Nanopub::Metadata.new
-          references = ::BEL::Nanopub::References.new
+          graph_name  = graph[:label] || graph[:id] || 'BEL Graph'
+          bel_version = graph[:metadata][:bel_version] || '1.0'
+          metadata    = ::BEL::Nanopub::Metadata.new
+          references  = ::BEL::Nanopub::References.new
 
-          # establish document header
+          # set document header
           metadata.document_header[:Name]        = graph_name
           metadata.document_header[:Description] = graph_name
           metadata.document_header[:Version]     = '1.0'
 
-          # establish annotation definitions
+          # set bel version
+          metadata.bel_version = bel_version
+
+          # set annotation definitions
           annotations = graph.fetch(:metadata, {}).
                               fetch(:annotation_definitions, nil)
           if !annotations && default_resource_index
-            annotations = Hash[
+            references.annotations =
               default_resource_index.annotations.sort_by { |anno|
-                anno.prefix
+                anno.keyword
               }.map { |anno|
-                [
-                  anno.prefix,
-                  {
-                    :type   => anno.type,
-                    :domain => anno.value
-                  }
-                ]
+                {
+                  :keyword => anno.keyword,
+                  :type    => anno.type,
+                  :domain  => anno.domain
+                }
               }
-            ]
           end
-          references.annotations = annotations if annotations
 
-          # establish namespace definitions
+          # set namespace definitions
           namespaces = graph.fetch(:metadata, {}).
                              fetch(:namespace_definitions, nil)
           if !namespaces && default_resource_index
-            namespaces = Hash[
+            references.namespaces =
               default_resource_index.namespaces.sort_by { |ns|
-                ns.prefix
+                ns.keyword
               }.map { |ns|
-                [
-                  ns.prefix,
-                  ns.url
-                ]
+                {
+                  :keyword => ns.keyword,
+                  :type    => :url,
+                  :domain  => ns.url
+                }
               }
-            ]
           end
-          references.namespaces = namespaces if namespaces
 
           ::BEL::Nanopub::Nanopub.create(
             :bel_statement => bel_statement,
-            :metadata      => metadata,
-            :references    => references
+            :metadata      => metadata.values,
+            :references    => references.values
           )
         }
       end
