@@ -141,7 +141,6 @@ module BEL::Translator::Plugins
             end
         end
 
-        require 'pry'; binding.pry
         Nanopub.create(
           :bel_statement      => nanopub[:bel_statement],
           :citation           => nanopub[:citation],
