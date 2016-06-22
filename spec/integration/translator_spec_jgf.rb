@@ -1,5 +1,6 @@
 require 'bel'
 require 'bel/translator/plugins/jgf/translator'
+require 'bel_parser/expression/model/namespace'
 
 describe BEL::Translator::Plugins::Jgf::JgfTranslator do
   let(:jgf_translator) do
@@ -40,7 +41,19 @@ describe BEL::Translator::Plugins::Jgf::JgfTranslator do
     it 'translates to one nanopub' do
       nanopubs = jgf_translator.read(jgf_file).to_a
       expect(nanopubs.size).to eql(1)
-      expect(nanopubs.first.bel_statement.to_s).to eql("p(HGNC:TP63)")
+    end
+
+    it 'the nanopub only has bel_statement, metadata and references' do
+      nanopubs = jgf_translator.read(jgf_file).to_a
+      nanopub = nanopubs.first
+      expect(nanopub.bel_statement.to_s).to eql("p(HGNC:TP63)")
+      expect(nanopub.citation.id).to   be_nil
+      expect(nanopub.support.value).to be_nil
+      expect(nanopub.experiment_context.values).to be_empty
+
+      expect(nanopub.metadata.values).to            include(:document_header)
+      expect(nanopub.metadata.values).to            include(:bel_version)
+      expect(nanopub.references.namespaces_hash).to include('HGNC')
     end
   end
 
@@ -120,138 +133,138 @@ describe BEL::Translator::Plugins::Jgf::JgfTranslator do
             ],
             "edges": [
               {
-                  "source": "p(HGNC:CXCL12)",
-                  "relation": "increases",
-                  "target": "act(p(HGNC:RAC1), ma(default:gtp))",
-                  "directed": true,
-                  "label": "p(HGNC:CXCL12) increases act(p(HGNC:RAC1), ma(default:gtp))",
-                  "metadata": {
-                      "causal": true,
-                      "nanopubs": [
-                          {
-                              "bel_statement": "p(HGNC:CXCL12) increases act(p(HGNC:RAC1), ma(default:gtp))",
-                              "support": "Treatment of cells with CXCL12 caused activations of Rac1, Rho, ERK, and c-Jun.",
-                              "experiment_context": [
-                                {
-                                  "name": "Species",
-                                  "value": "human",
-                                  "uri": "http://www.openbel.org/bel/namespace/ncbi-taxonomy/9606"
-                                }
-                              ],
-                              "citation": {
-                                  "type": "Other",
-                                  "name": "cxcl12 induces connective tissue growth factor expression in human lung fibroblasts through the rac1/erk, jnk, and ap-1 pathways.",
-                                  "id": "25121739"
-                              }
-                          },
-                          {
-                              "bel_statement": "p(HGNC:CXCL12) increases act(p(HGNC:RAC1), ma(default:gtp))",
-                              "support": "CXCL12 triggers a Gαi2-dependent membrane translocation of ELMO1, which associates with Dock180 to activate small G-proteins Rac1 and Rac2.",
-                              "experiment_context": [
-                                {
-                                  "name": "Species",
-                                  "value": "human",
-                                  "uri": "http://www.openbel.org/bel/namespace/ncbi-taxonomy/9606"
-                                }
-                              ],
-                              "citation": {
-                                  "type": "Other",
-                                  "name": "Association between Gαi2 and ELMO1/Dock180 connects chemokine signalling with Rac activation and metastasis.",
-                                  "id": "23591873"
-                              }
-                          },
-                          {
-                              "bel_statement": "p(HGNC:CXCL12) increases act(p(HGNC:RAC1), ma(default:gtp))",
-                              "support": "Treatment of cells with CXCL12 caused activations of Rac1, Rho, ERK, and c-Jun.",
-                              "experiment_context": [
-                                {
-                                  "name": "Species",
-                                  "value": "human",
-                                  "uri": "http://www.openbel.org/bel/namespace/ncbi-taxonomy/9606"
-                                }
-                              ],
-                              "citation": {
-                                  "type": "Other",
-                                  "name": "CXCL12 induces connective tissue growth factor expression in human lung fibroblasts through the Rac1/ERK, JNK, and AP-1 pathways.",
-                                  "id": "25121739"
-                              }
-                          }
-                      ]
-                  }
+                "source": "p(HGNC:CXCL12)",
+                "relation": "increases",
+                "target": "act(p(HGNC:RAC1), ma(default:gtp))",
+                "directed": true,
+                "label": "p(HGNC:CXCL12) increases act(p(HGNC:RAC1), ma(default:gtp))",
+                "metadata": {
+                  "causal": true,
+                  "nanopubs": [
+                    {
+                      "bel_statement": "p(HGNC:CXCL12) increases act(p(HGNC:RAC1), ma(default:gtp))",
+                      "support": "Treatment of cells with CXCL12 caused activations of Rac1, Rho, ERK, and c-Jun.",
+                      "experiment_context": [
+                        {
+                          "name": "Species",
+                          "value": "human",
+                          "uri": "http://www.openbel.org/bel/namespace/ncbi-taxonomy/9606"
+                        }
+                      ],
+                      "citation": {
+                          "type": "Other",
+                          "name": "cxcl12 induces connective tissue growth factor expression in human lung fibroblasts through the rac1/erk, jnk, and ap-1 pathways.",
+                          "id": "25121739"
+                      }
+                    },
+                    {
+                      "bel_statement": "p(HGNC:CXCL12) increases act(p(HGNC:RAC1), ma(default:gtp))",
+                      "support": "CXCL12 triggers a Gαi2-dependent membrane translocation of ELMO1, which associates with Dock180 to activate small G-proteins Rac1 and Rac2.",
+                      "experiment_context": [
+                        {
+                          "name": "Species",
+                          "value": "human",
+                          "uri": "http://www.openbel.org/bel/namespace/ncbi-taxonomy/9606"
+                        }
+                      ],
+                      "citation": {
+                          "type": "Other",
+                          "name": "Association between Gαi2 and ELMO1/Dock180 connects chemokine signalling with Rac activation and metastasis.",
+                          "id": "23591873"
+                      }
+                    },
+                    {
+                      "bel_statement": "p(HGNC:CXCL12) increases act(p(HGNC:RAC1), ma(default:gtp))",
+                      "support": "Treatment of cells with CXCL12 caused activations of Rac1, Rho, ERK, and c-Jun.",
+                      "experiment_context": [
+                        {
+                          "name": "Species",
+                          "value": "human",
+                          "uri": "http://www.openbel.org/bel/namespace/ncbi-taxonomy/9606"
+                        }
+                      ],
+                      "citation": {
+                          "type": "Other",
+                          "name": "CXCL12 induces connective tissue growth factor expression in human lung fibroblasts through the Rac1/ERK, JNK, and AP-1 pathways.",
+                          "id": "25121739"
+                      }
+                    }
+                  ]
+                }
               },
               {
-                  "source": "bp(MESHPP:Apoptosis)",
-                  "relation": "positiveCorrelation",
-                  "target": "p(HGNC:TLR4)",
-                  "directed": true,
-                  "label": "bp(MESHPP:Apoptosis) positiveCorrelation p(HGNC:TLR4)",
-                  "metadata": {
-                      "causal": true,
-                      "nanopubs": [
-                          {
-                              "bel_statement": "bp(MESHPP:Apoptosis) positiveCorrelation p(HGNC:TLR4)",
-                              "support": "Toll-like receptors 4 (TLR4) is induced in patients with an advanced stage of chronic obstructive lung disease (COPD) in parallel with increases in apoptosis",
-                              "experiment_context": [
-                                {
-                                  "name": "Species",
-                                  "value": "human",
-                                  "uri": "http://www.openbel.org/bel/namespace/ncbi-taxonomy/9606"
-                                },
-                                {
-                                  "name": "Disease",
-                                  "value": "chronic obstructive pulmonary disease",
-                                  "uri": "http://www.openbel.org/bel/namespace/disease-ontology/3083"
-                                },
-                                {
-                                  "name": "Cell",
-                                  "value": "type I pneumocyte",
-                                  "uri": "http://www.openbel.org/bel/namespace/cell-ontology/0002062"
-                                },
-                                {
-                                  "name": "Uberon",
-                                  "value": "lung",
-                                  "uri": "http://www.openbel.org/bel/namespace/uberon/0002048"
-                                },
-                              ],
-                              "citation": {
-                                  "type": "Other",
-                                  "name": "",
-                                  "id": "22983353"
-                              }
-                          },
-                          {
-                              "bel_statement": "bp(MESHPP:Apoptosis) positiveCorrelation p(HGNC:TLR4)",
-                              "support": "Toll-like receptors 4 (TLR4) is induced in patients with an advanced stage of chronic obstructive lung disease (COPD) in parallel with increases in apoptosis.",
-                              "experiment_context": [
-                                {
-                                  "name": "Species",
-                                  "value": "human",
-                                  "uri": "http://www.openbel.org/bel/namespace/ncbi-taxonomy/9606"
-                                },
-                                {
-                                  "name": "Disease",
-                                  "value": "chronic obstructive pulmonary disease",
-                                  "uri": "http://www.openbel.org/bel/namespace/disease-ontology/3083"
-                                },
-                                {
-                                  "name": "Cell",
-                                  "value": "type I pneumocyte",
-                                  "uri": "http://www.openbel.org/bel/namespace/cell-ontology/0002062"
-                                },
-                                {
-                                  "name": "Uberon",
-                                  "value": "lung",
-                                  "uri": "http://www.openbel.org/bel/namespace/uberon/0002048"
-                                },
-                              ],
-                              "citation": {
-                                  "type": "Other",
-                                  "name": "",
-                                  "id": ""
-                              }
-                          }
-                      ]
-                  }
+                "source": "bp(MESHPP:Apoptosis)",
+                "relation": "positiveCorrelation",
+                "target": "p(HGNC:TLR4)",
+                "directed": true,
+                "label": "bp(MESHPP:Apoptosis) positiveCorrelation p(HGNC:TLR4)",
+                "metadata": {
+                  "causal": true,
+                  "nanopubs": [
+                    {
+                      "bel_statement": "bp(MESHPP:Apoptosis) positiveCorrelation p(HGNC:TLR4)",
+                      "support": "Toll-like receptors 4 (TLR4) is induced in patients with an advanced stage of chronic obstructive lung disease (COPD) in parallel with increases in apoptosis",
+                      "experiment_context": [
+                        {
+                          "name": "Species",
+                          "value": "human",
+                          "uri": "http://www.openbel.org/bel/namespace/ncbi-taxonomy/9606"
+                        },
+                        {
+                          "name": "Disease",
+                          "value": "chronic obstructive pulmonary disease",
+                          "uri": "http://www.openbel.org/bel/namespace/disease-ontology/3083"
+                        },
+                        {
+                          "name": "Cell",
+                          "value": "type I pneumocyte",
+                          "uri": "http://www.openbel.org/bel/namespace/cell-ontology/0002062"
+                        },
+                        {
+                          "name": "Uberon",
+                          "value": "lung",
+                          "uri": "http://www.openbel.org/bel/namespace/uberon/0002048"
+                        }
+                      ],
+                      "citation": {
+                          "type": "Other",
+                          "name": "",
+                          "id": "22983353"
+                      }
+                    },
+                    {
+                      "bel_statement": "bp(MESHPP:Apoptosis) positiveCorrelation p(HGNC:TLR4)",
+                      "support": "Toll-like receptors 4 (TLR4) is induced in patients with an advanced stage of chronic obstructive lung disease (COPD) in parallel with increases in apoptosis.",
+                      "experiment_context": [
+                        {
+                          "name": "Species",
+                          "value": "human",
+                          "uri": "http://www.openbel.org/bel/namespace/ncbi-taxonomy/9606"
+                        },
+                        {
+                          "name": "Disease",
+                          "value": "chronic obstructive pulmonary disease",
+                          "uri": "http://www.openbel.org/bel/namespace/disease-ontology/3083"
+                        },
+                        {
+                          "name": "Cell",
+                          "value": "type I pneumocyte",
+                          "uri": "http://www.openbel.org/bel/namespace/cell-ontology/0002062"
+                        },
+                        {
+                          "name": "Uberon",
+                          "value": "lung",
+                          "uri": "http://www.openbel.org/bel/namespace/uberon/0002048"
+                        }
+                      ],
+                      "citation": {
+                          "type": "Other",
+                          "name": "",
+                          "id": ""
+                      }
+                    }
+                  ]
+                }
               }
             ]
           }
@@ -259,6 +272,9 @@ describe BEL::Translator::Plugins::Jgf::JgfTranslator do
       JGF
     end
 
+    it 'translates to five nanopub' do
+      expect(jgf_translator.read(jgf_file).to_a.size).to eql(5)
+    end
   end
 end
 # vim: ts=2 sw=2
