@@ -10,6 +10,8 @@ module BEL::Translator::Plugins
 
       include ::BEL::Translator
       include ::BEL::Namespace
+      include ::BEL::Nanopub
+      include ::BELParser::Expression::Model
 
       def read(data, options = {})
         # FIXME Use default resources only if edge nanopubs do not contain
@@ -33,8 +35,8 @@ module BEL::Translator::Plugins
         }
 
         objects.each do |nanopub|
-          unless nanopub.bel_statement.is_a?(BELParser::Expression::Model::Statement)
-            nanopub.bel_statement = ::BEL::Nanopub::Nanopub.parse_statement(nanopub)
+          unless nanopub.bel_statement.is_a?(Statement)
+            nanopub.bel_statement = Nanopub.parse_statement(nanopub)
           end
 
           stmt    = nanopub.bel_statement
@@ -67,6 +69,16 @@ module BEL::Translator::Plugins
       private
 
       def unwrap(graph, default_resource_index)
+        graph_name  = graph[:label] || graph[:id] || 'BEL Graph'
+        bel_version = graph.fetch(:metadata, {})[:bel_version] || '1.0'
+        spec =
+          if BELParser::Language.defines_version?(bel_version)
+            BELParser::Language.specification(bel_version)
+          else
+            BELParser::Language.default_specification
+          end
+        namespace_hash = namespaces(default_resource_index)
+
         # index nodes
         id_nodes = Hash[
           graph[:nodes].map { |node|
@@ -91,7 +103,10 @@ module BEL::Translator::Plugins
             rel = 'association' unless rel
 
             BELParser::Expression.parse_statements(
-              "#{source_node} #{rel} #{target_node}\n")
+              "#{source_node} #{rel} #{target_node}\n",
+              spec,
+              namespace_hash
+            )
           end
         }.compact
 
@@ -100,17 +115,18 @@ module BEL::Translator::Plugins
           bel_statements.concat(
             ids.map { |id|
               BELParser::Expression.parse_statements(
-                "#{id_nodes[id]}\n")
+                "#{id_nodes[id]}\n",
+                spec,
+                namespace_hash
+              )
             }
           )
         end
 
         # map statements to nanopub objects
         bel_statements.map { |bel_statement|
-          graph_name  = graph[:label] || graph[:id] || 'BEL Graph'
-          bel_version = graph.fetch(:metadata, {})[:bel_version] || '1.0'
-          metadata    = ::BEL::Nanopub::Metadata.new
-          references  = ::BEL::Nanopub::References.new
+          metadata    = Metadata.new
+          references  = References.new
 
           # set document header
           metadata.document_header[:Name]        = graph_name
@@ -152,12 +168,23 @@ module BEL::Translator::Plugins
               }
           end
 
-          ::BEL::Nanopub::Nanopub.create(
+          Nanopub.create(
             :bel_statement => bel_statement,
             :metadata      => metadata.values,
             :references    => references.values
           )
         }
+      end
+
+      def namespaces(resource_index)
+        Hash[
+          resource_index.namespaces.sort_by { |ns|
+            ns.keyword
+          }.map { |ns|
+            keyword = ns.keyword.to_s
+            [keyword, Namespace.new(keyword, nil, ns.url)]
+          }
+        ]
       end
     end
   end

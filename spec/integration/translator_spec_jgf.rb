@@ -40,7 +40,7 @@ describe BEL::Translator::Plugins::Jgf::JgfTranslator do
     it 'translates to one nanopub' do
       nanopubs = jgf_translator.read(jgf_file).to_a
       expect(nanopubs.size).to eql(1)
-      expect(nanopubs.first.bel_statement.to_s).to eql("p(HGNC:TP63")
+      expect(nanopubs.first.bel_statement.to_s).to eql("p(HGNC:TP63)")
     end
   end
 
