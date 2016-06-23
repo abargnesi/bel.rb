@@ -167,7 +167,7 @@ module BEL
           )
 
           if new_reference
-            annotation[:name] = new_reference[:keyword]
+            annotation[:name] = new_reference.keyword
           end
         end
       end
