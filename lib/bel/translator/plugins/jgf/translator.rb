@@ -132,13 +132,25 @@ module BEL::Translator::Plugins
       def convert_edge_nanopub(nanopub, default_nanopub)
         exp_context = nanopub[:experiment_context] || nanopub[:biological_context]
         if exp_context.is_a?(Hash)
+          annotations = default_nanopub[:references][:annotations]
           exp_context = 
             exp_context.map do |keyword, value|
-              {
-                :name  => keyword,
-                :value => value
-              }
-            end
+              case keyword
+              when :species_common_name
+                {
+                  :name  => 'Species',
+                  :value => value
+                }
+              else
+                match = annotations.find { |ns| ns[:keyword].to_s.casecmp(keyword.to_s) == 0}
+                if match
+                  {
+                    :name  => match[:keyword].to_s,
+                    :value => value
+                  }
+                end
+              end
+            end.compact
         end
 
         Nanopub.create(
