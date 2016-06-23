@@ -521,14 +521,14 @@ Subcommands:
         end
 
         # write random nanopubs to STDOUT through a translator
-        translator_id = options[:translator] || :bel
-        translator    = BEL.translator(options[:translator] || :bel)
+        translator_id = options[:translator] || :bel_script
+        translator    = BEL.translator(options[:translator] || :bel_script)
         unless translator
           $stderr.puts %Q{Cannot find the "#{translator_id}" plugin.}
           exit 1
         end
 
-        translator.write(random_data, $stdout)
+        translator.write(random_data, $stdout, :streaming => true)
       end
     end
 
