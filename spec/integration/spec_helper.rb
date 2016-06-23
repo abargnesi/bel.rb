@@ -12,6 +12,9 @@ def make_nanopub(bel_statement, bel_version)
     BEL::Nanopub::Citation.new('PubMed', 'LsJournal', '101101')
   nanopub.support              =
     BEL::Nanopub::Support.new('Quotation example taken from citation')
-  nanopub.metadata.bel_version = bel_version
+  nanopub.metadata.bel_version                   = bel_version
+  nanopub.metadata.document_header[:Name]        = 'Test document'
+  nanopub.metadata.document_header[:Description] = 'Test document'
+  nanopub.metadata.document_header[:Version]     = '1.3'
   nanopub
 end

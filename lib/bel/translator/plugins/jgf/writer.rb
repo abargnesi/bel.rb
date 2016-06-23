@@ -12,8 +12,8 @@ module BEL::Translator::Plugins
         index = index_nanopubs(nanopubs)
 
         edges = []
-        edges.concat(index[:simple_statement].map(&self.method(:simple_to_edge)))
-        edges.concat(index[:nested_statement].map(&self.method(:nested_to_edge)))
+        edges.concat(index[:simple_statement].map { |k, v| simple_to_edge(k, v) })
+        edges.concat(index[:nested_statement].map { |k, v| nested_to_edge(k, v) })
 
         nodes = Set.new
         nodes.merge(index[:observed_term].map { |k, v| observed_to_node(k, v) })
@@ -76,7 +76,12 @@ module BEL::Translator::Plugins
           :label    => "#{source} #{relation} #{target}",
           :metadata => {
             :causal   => edge_id[1].causal?,
-            :nanopubs => nanopubs.map(&:to_h)
+            :nanopubs =>
+              nanopubs.map do |nanopub|
+                hash = nanopub.to_h
+                hash[:bel_statement] = hash[:bel_statement].to_s(:long)
+                hash
+              end
           }
         }
       end
@@ -84,7 +89,12 @@ module BEL::Translator::Plugins
 
       def edge_nodes(edges)
         edges.flat_map do |edge|
-          edge.values_at(:source, :target)
+          edge.values_at(:source, :target).map do |node|
+            {
+              :id    => node,
+              :label => node
+            }
+          end
         end
       end
 
