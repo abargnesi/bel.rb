@@ -12,8 +12,8 @@ module BEL::Translator::Plugins
         Reader.new.read(data, options)
       end
 
-      def write(objects, writer = StringIO.new, options = {})
-        Writer.new.write(objects, writer, options)
+      def write(nanopubs, writer = StringIO.new, options = {})
+        Writer.new.write(nanopubs, writer, options)
       end
     end
   end

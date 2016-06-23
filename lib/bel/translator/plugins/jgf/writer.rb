@@ -3,20 +3,16 @@ module BEL::Translator::Plugins
   module Jgf
 
     class Writer
-      def write(objects, writer = StringIO.new, options = {})
+      def write(nanopubs, writer = StringIO.new, options = {})
         graph = {
           :type  => 'BEL-V1.0',
           :nodes => [],
           :edges => []
         }
 
-        objects.each do |nanopub|
-          unless nanopub.bel_statement.is_a?(Statement)
-            nanopub.bel_statement = Nanopub.parse_statement(nanopub)
-          end
-
+        nanopubs.each do |nanopub|
           stmt    = nanopub.bel_statement
-          subject = stmt.subject.to_bel
+          subject = stmt.subject.to_s
 
           graph[:nodes] << {
             :id    => subject,
@@ -24,14 +20,14 @@ module BEL::Translator::Plugins
           }
 
           if stmt.object
-            object  = stmt.object.to_bel
+            object  = stmt.object.to_s
             graph[:nodes] << {
               :id    => object,
               :label => object
             }
             graph[:edges] << {
               :source   => subject,
-              :relation => stmt.relationship,
+              :relation => stmt.relationship.to_s(:long),
               :target   => object
             }
           end
