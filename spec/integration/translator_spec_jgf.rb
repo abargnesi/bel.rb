@@ -344,8 +344,11 @@ describe BEL::Translator::Plugins::Jgf::JgfTranslator do
         jgf          = jgf_translator.write(nanopubs).string
         graph_object = BEL::JSON.read(jgf).find { |obj| obj.include?(:edges) }
 
-        expect(graph_object[:edges]).to      be_an(Array)
-        expect(graph_object[:edges].size).to eql(1)
+        expect(graph_object).to include(:label)
+        expect(graph_object).to include(:metadata)
+        expect(graph_object[:metadata]).to include(:description)
+        expect(graph_object[:metadata]).to include(:version)
+        expect(graph_object[:metadata]).to include(:bel_version)
       end
 
       it 'JGF contains two nodes' do
@@ -372,6 +375,80 @@ describe BEL::Translator::Plugins::Jgf::JgfTranslator do
 
         expect(graph_object[:edges]).to be_an(Array)
         expect(graph_object[:edges].size).to eql(1)
+      end
+
+      it 'edge has one nanopub' do
+        jgf          = jgf_translator.write(nanopubs).string
+        graph_object = BEL::JSON.read(jgf).find { |obj| obj.include?(:edges) }
+
+        edge = graph_object[:edges].first
+        expect(edge).to include(:metadata)
+        expect(edge[:metadata]).to include(:nanopubs)
+        expect(edge[:metadata][:nanopubs].size).to eql(1)
+
+        nanopub = nanopubs.first.to_h
+        nanopub[:bel_statement] = nanopub[:bel_statement].to_s(:long)
+
+        expect(nanopub).to include(:bel_statement)
+        expect(nanopub).to include(:citation)
+        expect(nanopub).to include(:support)
+        expect(nanopub).to include(:metadata)
+        expect(nanopub).to include(:references)
+      end
+    end
+
+    context 'single nested statement nanopub' do
+      let(:nanopubs) do
+        [
+          make_nanopub('p(HGNC:AKT1) => (p(HGNC:AKT2) -| p(HGNC:AKT3))', '1.0')
+        ]
+      end
+
+      it 'writes a JGF JSON string' do
+        jgf = jgf_translator.write(nanopubs).string
+        expect(jgf).not_to be_nil
+        expect(jgf).not_to be_empty
+      end
+
+      it 'JGF contains graph metadata' do
+        jgf          = jgf_translator.write(nanopubs).string
+        graph_object = BEL::JSON.read(jgf).find { |obj| obj.include?(:edges) }
+
+        expect(graph_object).to include(:label)
+        expect(graph_object).to include(:metadata)
+        expect(graph_object[:metadata]).to include(:description)
+        expect(graph_object[:metadata]).to include(:version)
+        expect(graph_object[:metadata]).to include(:bel_version)
+      end
+
+      it 'JGF contains two nodes (from innermost statement)' do
+        jgf = jgf_translator.write(nanopubs).string
+        graph_object = BEL::JSON.read(jgf).find { |obj| obj.include?(:nodes) }
+
+        expect(graph_object[:nodes]).to      be_an(Array)
+        expect(graph_object[:nodes].size).to eql(2)
+        expect(graph_object[:nodes]).to      contain_exactly(
+          {
+            :id => 'proteinAbundance(HGNC:AKT2)',
+            :label => 'proteinAbundance(HGNC:AKT2)'
+          },
+          {
+            :id => 'proteinAbundance(HGNC:AKT3)',
+            :label => 'proteinAbundance(HGNC:AKT3)'
+          }
+        )
+      end
+
+      it 'JGF contains one edge (the innermost statement)' do
+        jgf          = jgf_translator.write(nanopubs).string
+        graph_object = BEL::JSON.read(jgf).find { |obj| obj.include?(:edges) }
+
+        expect(graph_object[:edges]).to be_an(Array)
+        expect(graph_object[:edges].size).to eql(1)
+
+        edge = graph_object[:edges].first
+        expect(edge[:label]).to eql(
+          'proteinAbundance(HGNC:AKT2) decreases proteinAbundance(HGNC:AKT3)')
       end
 
       it 'edge has one nanopub' do
