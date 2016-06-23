@@ -1,4 +1,5 @@
 require 'bel'
+require 'bel_parser/expression/model/namespace'
 require_relative '../gen'
 BEL::Gen.soft_require('rantly')
 
@@ -11,15 +12,15 @@ module BEL
     module Namespace
 
       # Array of the latest OpenBEL {BEL::Namespace::NamespaceDefinition}.
-      NAMESPACES = BEL::Namespace::NAMESPACE_LATEST.map { |prefix, (url, rdf_uri)|
-        BEL::Namespace::NamespaceDefinition.new(prefix, url, rdf_uri)
+      NAMESPACES = BEL::Namespace::NAMESPACE_LATEST.map { |keyword, (url, _)|
+        BELParser::Expression::Model::Namespace.new(keyword, nil, url)
       }
 
       # Retrieve the namespaces chosen during use of {#namespace}.
       # @return [Hash] hash of namespace prefix => {BEL::Namespace::NamespaceDefinition}
       def referenced_namespaces
         @referenced_namespaces ||= Hash[
-          NAMESPACES.map { |ns| [ns.prefix, ns] }
+          NAMESPACES.map { |ns| [ns.keyword, ns] }
         ]
       end
 
@@ -29,7 +30,7 @@ module BEL
         ns = Rantly {
           choose(*NAMESPACES)
         }
-        referenced_namespaces[ns.prefix] = ns
+        referenced_namespaces[ns.keyword] = ns
         ns
       end
     end

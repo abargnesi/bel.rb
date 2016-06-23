@@ -44,13 +44,14 @@ module BEL
           :namespaces  => referenced_namespaces.map { |prefix, ns_def|
             {
               :keyword => prefix,
+              :type    => :url,
               :uri     => ns_def.url
             }
           }.sort_by { |ns| ns[:keyword] },
           :annotations => referenced_annotations.map { |keyword, anno_def|
             {
               :keyword => keyword,
-              :type    => :uri,
+              :type    => :url,
               :domain  => anno_def.url
             }
           }

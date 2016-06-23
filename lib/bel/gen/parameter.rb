@@ -1,4 +1,5 @@
 require 'bel'
+require 'bel_parser/expression/model/parameter'
 require_relative '../gen'
 BEL::Gen.soft_require('rantly')
 
@@ -22,7 +23,7 @@ module BEL
             string(/[[:alnum:]]|[[:blank:]]|[[:punct:]]/)
           }
         }
-        BEL::Nanopub::Parameter.new(
+        BELParser::Expression::Model::Parameter.new(
           ns,
           value,
           :A
@@ -40,7 +41,7 @@ module BEL
             string(/[[:alnum:]]|[[:blank:]]|[[:punct:]]/)
           }
         }
-        BEL::Nanopub::Parameter.new(
+        BELParser::Expression::Model::Parameter.new(
           nil,
           value,
           :A

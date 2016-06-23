@@ -11,7 +11,7 @@ module BEL
       include BEL::Gen::Parameter
 
       # Array of all BEL 1.0 functions including both short and long form.
-      FUNCTIONS     = BEL::Language::FUNCTIONS.map { |_, fx|
+      FUNCTIONS = BEL::Language::FUNCTIONS.map { |_, fx|
         [ fx[:short_form], fx[:long_form] ]
       }.flatten.sort.uniq
 

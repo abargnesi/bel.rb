@@ -38,14 +38,7 @@ module BEL
       # @return [BEL::Nanopub::Parameter] a parameter with value sampled from a
       #         random namespace
       def bel_parameter_with_namespace
-        ns    = namespace
-        value = ns.values.keys.sample
-        enc   = ns.values[value]
-        BEL::Nanopub::Parameter.new(
-          ns,
-          value,
-          enc
-        )
+        namespace.each.first
       end
     end
   end
