@@ -24,9 +24,29 @@ module BEL
       # Returns a randomly constructed BEL statement.
       # @return [String] the statement label
       def bel_statement
-        sub = bel_term
-        obj = bel_term
-        "#{sub} #{relationship} #{obj}"
+        observed = observed_term
+        simple   = simple_statement
+        nested   = nested_statement
+
+        Rantly {
+          freq(
+            [5, :literal, simple],
+            [1, :literal, observed],
+            [0, :literal, nested]
+          )
+        }
+      end
+
+      def observed_term
+        "#{bel_term}"
+      end
+
+      def simple_statement
+        "#{bel_term} #{relationship} #{bel_term}"
+      end
+
+      def nested_statement
+        "#{bel_term} #{relationship} (#{simple_statement})"
       end
     end
   end
