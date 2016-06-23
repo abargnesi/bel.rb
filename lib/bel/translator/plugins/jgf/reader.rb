@@ -49,7 +49,7 @@ module BEL::Translator::Plugins
         edges    = graph.fetch(:edges, [])
 
         node_nanopubs(nanopub, node_ids, edges) +
-        edge_nanopubs(nanopub, node_ids, edges)
+        edge_nanopubs(spec, nanopub, node_ids, edges)
       end
 
       private
@@ -75,7 +75,7 @@ module BEL::Translator::Plugins
         end
       end
 
-      def edge_nanopubs(default_nanopub, node_ids, edges)
+      def edge_nanopubs(spec, default_nanopub, node_ids, edges)
         edges.flat_map do |edge|
           src, tgt = edge.values_at(:source, :target)
           source_node = node_ids[src]
@@ -86,7 +86,8 @@ module BEL::Translator::Plugins
           nanopubs      = edge_metadata[:nanopubs] || edge_metadata[:evidences]
 
           if nanopubs.nil? || nanopubs.empty?
-            rel = edge.fetch(:relation, 'association')
+            rel = edge[:relation]
+            rel = spec.relationship(rel) ? rel : 'association'
             Nanopub.create(
               :bel_statement => "#{source_node} #{rel} #{target_node}\n",
               :metadata      => default_nanopub[:metadata],
