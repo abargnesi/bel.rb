@@ -1,4 +1,5 @@
 require_relative '../gen'
+require 'bel_parser/expression/model/annotation'
 BEL::Gen.soft_require('rantly')
 
 module BEL
@@ -10,8 +11,8 @@ module BEL
 
       # Array of the latest OpenBEL {BEL::Annotation::AnnotationDefinition}.
       ANNOTATIONS =
-        BEL::Annotation::ANNOTATION_LATEST.map { |keyword, (url, rdf_uri)|
-          BEL::Annotation::AnnotationDefinition.new(keyword, url, rdf_uri)
+        BEL::Annotation::ANNOTATION_LATEST.map { |keyword, (url, _)|
+          BELParser::Expression::Model::Annotation.new(keyword, :url, url)
         }
 
       # Retrieve the annotations chosen during use of {#annotation}.

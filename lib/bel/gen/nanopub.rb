@@ -32,6 +32,22 @@ module BEL
       def nanopub
         nanopub = BEL::Nanopub::Nanopub.new
 
+        nanopub.references         = BEL::Nanopub::References.new({
+          :namespaces  => referenced_namespaces.map { |prefix, ns_def|
+            {
+              :keyword => prefix,
+              :type    => :url,
+              :domain  => ns_def.url
+            }
+          }.sort_by { |ns| ns[:keyword] },
+          :annotations => referenced_annotations.map { |keyword, anno_def|
+            {
+              :keyword => keyword,
+              :type    => :url,
+              :domain  => anno_def.domain
+            }
+          }
+        })
         nanopub.bel_statement      = bel_statement
         nanopub.citation           = citation
         nanopub.support            = BEL::Nanopub::Support.new(
@@ -40,22 +56,6 @@ module BEL
         nanopub.experiment_context = BEL::Nanopub::ExperimentContext.new(
           (1..5).to_a.sample.times.map { annotation }
         )
-        nanopub.references         = BEL::Nanopub::References.new({
-          :namespaces  => referenced_namespaces.map { |prefix, ns_def|
-            {
-              :keyword => prefix,
-              :type    => :url,
-              :uri     => ns_def.url
-            }
-          }.sort_by { |ns| ns[:keyword] },
-          :annotations => referenced_annotations.map { |keyword, anno_def|
-            {
-              :keyword => keyword,
-              :type    => :url,
-              :domain  => anno_def.url
-            }
-          }
-        })
         nanopub.metadata           = BEL::Nanopub::Metadata.new({
           :document_header => document_header
         })

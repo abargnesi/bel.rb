@@ -29,7 +29,7 @@ module BEL
 
         {
           :name  => anno.keyword,
-          :value => anno.values.keys.sample
+          :value => anno.each.take(1000).sample
         }
       end
 
@@ -38,7 +38,7 @@ module BEL
       # @return [BEL::Nanopub::Parameter] a parameter with value sampled from a
       #         random namespace
       def bel_parameter_with_namespace
-        namespace.each.first
+        namespace.each.take(1000).sample
       end
     end
   end
